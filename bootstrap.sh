@@ -62,6 +62,9 @@ step "Fairness audit"
 step "Demo sample files"
 ( cd "$ROOT/backend" && "$VENV_PY" scripts/make_sample_files.py >/dev/null && ok "12 files in backend/data/samples/" )
 
+step "Frontend demo cache"
+( cd "$ROOT/backend" && "$VENV_PY" scripts/export_demo_cache.py )
+
 step "Seeding the demo database"
 ( cd "$ROOT/backend" && "$VENV_PY" -m app.seed )
 
