@@ -1,0 +1,61 @@
+transaction_date,txn_amount,direction,description,closing_balance
+30-04-2026,1570.0,Debit,Atta flour,30580
+02-05-2026,2590.0,Debit,Atta flour,32150
+02-05-2026,450.0,Debit,Mobile easyload topup,24230
+02-05-2026,1350.0,Debit,Misc kharcha,22880
+04-05-2026,2390.0,Credit,Cash in from Bilal,28810
+05-05-2026,540.0,Debit,Mobile easyload topup,21970
+07-05-2026,4800.0,Credit,Shop sale,20940
+08-05-2026,4180.0,Credit,Cash in from Bilal,36410
+08-05-2026,370.0,Debit,Mobile easyload topup,22510
+11-05-2026,3840.0,Credit,Cash in from Bilal,11720
+12-05-2026,1820.0,Debit,Fuel,20150
+15-05-2026,4720.0,Credit,Cash in from Bilal,7880
+15-05-2026,2700.0,Debit,Wholesale stock,27880
+18-05-2026,1670.0,Debit,Wholesale stock,34740
+18-05-2026,2290.0,Debit,Misc kharcha,25590
+21-05-2026,2090.0,Credit,Cash in from Bilal,23030
+21-05-2026,3420.0,Credit,Cash in from Bilal,32230
+23-05-2026,4420.0,Credit,QR sale customer,16140
+23-05-2026,3390.0,Credit,Cash in from Bilal,26420
+24-05-2026,910.0,Debit,Fuel,24680
+02-06-2026,4810.0,Credit,P2P received wallet,36570
+04-06-2026,2400.0,Credit,Cash in from Bilal,46470
+06-06-2026,3510.0,Credit,Transfer received,40080
+07-06-2026,2470.0,Debit,Fuel,45720
+08-06-2026,2580.0,Debit,Atta flour,40370
+09-06-2026,4580.0,Credit,P2P received wallet,28260
+09-06-2026,2790.0,Credit,Cash in from Bilal,49260
+09-06-2026,1660.0,Debit,Wholesale stock,38710
+10-06-2026,2770.0,Debit,Fuel,42950
+13-06-2026,1900.0,Debit,Wholesale stock,48190
+13-06-2026,1650.0,Debit,P2P sent,37060
+15-06-2026,2340.0,Debit,Fuel,50090
+16-06-2026,1250.0,Debit,P2P sent,33970
+17-06-2026,3990.0,Credit,Cash in from Bilal,44070
+17-06-2026,1570.0,Debit,P2P sent,35220
+20-06-2026,3500.0,Credit,Transfer received,31760
+21-06-2026,270.0,Debit,Mobile easyload topup,36790
+22-06-2026,3530.0,Credit,Cash in from Bilal,23680
+24-06-2026,4480.0,Credit,P2P received wallet,53740
+24-06-2026,1310.0,Debit,Fuel,52430
+27-06-2026,1850.0,Debit,Misc kharcha,46110
+28-06-2026,5040.0,Credit,P2P received wallet,60950
+30-06-2026,2410.0,Debit,P2P sent,49900
+02-07-2026,1350.0,Debit,Fuel,55060
+04-07-2026,4630.0,Credit,P2P received wallet,49260
+06-07-2026,2100.0,Debit,Misc kharcha,44010
+07-07-2026,2750.0,Debit,Misc kharcha,52310
+08-07-2026,3490.0,Credit,Cash in from Bilal,37460
+09-07-2026,3590.0,Credit,P2P received wallet,52850
+10-07-2026,2070.0,Credit,Cash in from Bilal,63020
+12-07-2026,3870.0,Credit,Cash in from Bilal,41330
+14-07-2026,2860.0,Debit,Misc kharcha,59710
+17-07-2026,2650.0,Credit,P2P received wallet,65670
+17-07-2026,1940.0,Debit,Wholesale stock,47960
+19-07-2026,3060.0,Credit,Cash in from Bilal,55910
+23-07-2026,3300.0,Credit,Transfer received,44630
+23-07-2026,3100.0,Debit,Rashan grocery kharcha,62570
+24-07-2026,2180.0,Debit,Transfer sent,57530
+24-07-2026,1120.0,Debit,Fuel,56410
+24-07-2026,3260.0,Debit,Rashan grocery kharcha,40750

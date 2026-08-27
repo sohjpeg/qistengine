@@ -1,0 +1,32 @@
+{
+  "applicant_id": "demo-fixture-001",
+  "archetype_hint": "kiryana_merchant",
+  "features": {
+    "utility_on_time_ratio": 0.82,
+    "utility_avg_days_late": 4.0,
+    "utility_bill_volatility": 0.26,
+    "utility_months_observed": 12,
+    "utility_disconnection_events": 0,
+    "monthly_inflow_pkr": 88000,
+    "monthly_outflow_pkr": 69000,
+    "net_cashflow_ratio": 0.216,
+    "cashflow_volatility": 0.3,
+    "income_trend_slope": 0.02,
+    "zero_balance_days_ratio": 0.12,
+    "balance_floor_ratio": 0.12,
+    "p2p_velocity": 9,
+    "p2p_unique_counterparties": 7,
+    "counterparty_concentration_hhi": 0.2,
+    "merchant_inflow_share": 0.62,
+    "txn_frequency_monthly": 64,
+    "mobile_topup_regularity": 0.72,
+    "expense_to_income_ratio": 0.68,
+    "savings_rate": 0.18,
+    "committee_participation": 1,
+    "wallet_tenure_months": 30,
+    "business_age_months": 60,
+    "dependents_count": 4,
+    "has_fixed_premises": 1,
+    "sim_tenure_months": 48
+  }
+}

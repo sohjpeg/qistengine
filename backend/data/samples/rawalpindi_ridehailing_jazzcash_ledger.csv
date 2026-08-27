@@ -1,0 +1,283 @@
+txn_date,amount,type,counterparty,balance
+28-04-2026,2010.0,Debit,IESCO bijli bill,56110
+28-04-2026,1160.0,Debit,Wholesale stock,35400
+29-04-2026,1330.0,Credit,POS receipt,30680
+29-04-2026,570.0,Debit,P2P sent,55540
+29-04-2026,1850.0,Debit,IESCO bijli bill,24560
+30-04-2026,1890.0,Credit,Shop sale,35940
+30-04-2026,1820.0,Credit,Cash in from Bilal,50100
+30-04-2026,2060.0,Credit,Shop sale,57940
+30-04-2026,930.0,Debit,Misc kharcha,60190
+01-05-2026,1830.0,Credit,POS receipt,19070
+01-05-2026,2130.0,Credit,POS receipt,32810
+01-05-2026,2070.0,Credit,POS receipt,52170
+01-05-2026,800.0,Debit,Misc kharcha,65220
+01-05-2026,870.0,Debit,Wholesale stock,36560
+02-05-2026,900.0,Credit,P2P received wallet,60190
+02-05-2026,1660.0,Credit,Shop sale,61850
+02-05-2026,360.0,Debit,Transfer sent,32800
+03-05-2026,1280.0,Credit,QR sale customer,22060
+03-05-2026,1130.0,Credit,POS receipt,48280
+03-05-2026,1720.0,Debit,IESCO bijli bill,61760
+03-05-2026,830.0,Debit,P2P sent,53890
+03-05-2026,2250.0,Debit,IESCO bijli bill,49920
+03-05-2026,1280.0,Debit,Atta flour,43050
+05-05-2026,930.0,Debit,Fuel,34470
+06-05-2026,880.0,Credit,Transfer received,8690
+06-05-2026,390.0,Debit,Misc kharcha,64830
+06-05-2026,310.0,Debit,Mobile easyload topup,49610
+06-05-2026,360.0,Debit,Transfer sent,33160
+06-05-2026,920.0,Debit,Fuel,23640
+07-05-2026,1770.0,Credit,POS receipt,64470
+08-05-2026,490.0,Debit,Misc kharcha,31200
+09-05-2026,1990.0,Credit,Shop sale,11750
+09-05-2026,1900.0,Credit,Shop sale,17240
+09-05-2026,1710.0,Credit,Transfer received,20780
+09-05-2026,1020.0,Debit,Wholesale stock,52170
+10-05-2026,1240.0,Credit,Cash in from Bilal,34050
+10-05-2026,570.0,Debit,P2P sent,67130
+10-05-2026,930.0,Debit,Wholesale stock,59260
+10-05-2026,710.0,Debit,Atta flour,45030
+10-05-2026,1870.0,Debit,IESCO bijli bill,40640
+10-05-2026,430.0,Debit,Misc kharcha,23210
+11-05-2026,2130.0,Credit,QR sale customer,38070
+11-05-2026,1960.0,Credit,POS receipt,42620
+11-05-2026,1240.0,Credit,P2P received wallet,54550
+11-05-2026,370.0,Debit,P2P sent,64460
+13-05-2026,1710.0,Credit,POS receipt,45890
+14-05-2026,1260.0,Credit,QR sale customer,47150
+14-05-2026,860.0,Debit,Rashan grocery kharcha,37430
+15-05-2026,980.0,Debit,Misc kharcha,63480
+15-05-2026,950.0,Debit,Fuel,33520
+16-05-2026,1560.0,Credit,P2P received wallet,44180
+16-05-2026,850.0,Credit,POS receipt,62700
+17-05-2026,960.0,Credit,QR sale customer,7810
+17-05-2026,1070.0,Credit,Cash in from Bilal,9760
+17-05-2026,1220.0,Credit,P2P received wallet,15340
+17-05-2026,150.0,Debit,Mobile easyload topup,58670
+17-05-2026,820.0,Debit,Atta flour,54720
+17-05-2026,700.0,Debit,Transfer sent,53190
+17-05-2026,540.0,Debit,Fuel,40100
+18-05-2026,1430.0,Credit,Transfer received,29350
+18-05-2026,1550.0,Credit,Transfer received,40660
+18-05-2026,1350.0,Credit,POS receipt,59290
+18-05-2026,760.0,Debit,P2P sent,45740
+18-05-2026,730.0,Debit,P2P sent,32070
+18-05-2026,380.0,Debit,P2P sent,31690
+19-05-2026,1140.0,Credit,Transfer received,53310
+19-05-2026,900.0,Debit,Wholesale stock,29270
+20-05-2026,1040.0,Credit,Shop sale,39110
+20-05-2026,550.0,Debit,Wholesale stock,58120
+20-05-2026,450.0,Debit,Transfer sent,49160
+20-05-2026,1180.0,Debit,Atta flour,47240
+20-05-2026,700.0,Debit,Fuel,44330
+20-05-2026,1240.0,Debit,Rashan grocery kharcha,28030
+20-05-2026,830.0,Debit,Rashan grocery kharcha,27200
+21-05-2026,640.0,Debit,Transfer sent,61120
+21-05-2026,440.0,Debit,P2P sent,58820
+21-05-2026,740.0,Debit,P2P sent,46500
+21-05-2026,780.0,Debit,Wholesale stock,39320
+22-05-2026,1250.0,Credit,Cash in from Bilal,13000
+22-05-2026,1030.0,Debit,Wholesale stock,38290
+22-05-2026,1030.0,Debit,Transfer sent,30170
+23-05-2026,1220.0,Credit,QR sale customer,23280
+23-05-2026,1570.0,Credit,P2P received wallet,24850
+23-05-2026,1740.0,Credit,Shop sale,26590
+23-05-2026,2030.0,Credit,QR sale customer,66500
+23-05-2026,790.0,Debit,Atta flour,26410
+24-05-2026,1330.0,Credit,Shop sale,27920
+24-05-2026,1330.0,Credit,Shop sale,55880
+24-05-2026,1110.0,Debit,Rashan grocery kharcha,66020
+24-05-2026,740.0,Debit,Fuel,48420
+25-05-2026,1250.0,Credit,Cash in from Bilal,6850
+25-05-2026,1120.0,Credit,P2P received wallet,14120
+25-05-2026,1200.0,Credit,QR sale customer,67700
+25-05-2026,540.0,Debit,Fuel,42510
+28-05-2026,2060.0,Credit,Shop sale,81500
+28-05-2026,1290.0,Debit,Wholesale stock,70820
+29-05-2026,820.0,Credit,POS receipt,32840
+29-05-2026,1570.0,Credit,POS receipt,49700
+29-05-2026,1650.0,Credit,QR sale customer,56080
+29-05-2026,1320.0,Credit,P2P received wallet,64600
+29-05-2026,2020.0,Credit,Transfer received,72530
+30-05-2026,900.0,Credit,POS receipt,40800
+30-05-2026,1320.0,Debit,Rashan grocery kharcha,74760
+30-05-2026,910.0,Debit,Misc kharcha,73850
+30-05-2026,1200.0,Debit,Atta flour,55020
+31-05-2026,1820.0,Credit,QR sale customer,45270
+01-06-2026,1240.0,Credit,P2P received wallet,76800
+01-06-2026,290.0,Debit,Mobile easyload topup,62050
+02-06-2026,1980.0,Credit,Shop sale,27770
+02-06-2026,1840.0,Debit,IESCO bijli bill,60210
+03-06-2026,1980.0,Credit,Transfer received,38250
+03-06-2026,1470.0,Credit,QR sale customer,58860
+03-06-2026,1220.0,Credit,QR sale customer,73750
+03-06-2026,1980.0,Debit,IESCO bijli bill,67600
+03-06-2026,480.0,Debit,P2P sent,51420
+04-06-2026,1120.0,Credit,Shop sale,48130
+04-06-2026,520.0,Debit,Transfer sent,49670
+05-06-2026,1740.0,Credit,Transfer received,47010
+05-06-2026,1960.0,Debit,IESCO bijli bill,43300
+06-06-2026,1020.0,Credit,P2P received wallet,59880
+06-06-2026,330.0,Debit,Misc kharcha,77050
+06-06-2026,570.0,Debit,Misc kharcha,58830
+06-06-2026,940.0,Debit,Rashan grocery kharcha,51900
+07-06-2026,540.0,Debit,Fuel,66490
+07-06-2026,1350.0,Debit,Atta flour,65140
+07-06-2026,900.0,Debit,Rashan grocery kharcha,45700
+08-06-2026,1560.0,Credit,POS receipt,51260
+08-06-2026,1150.0,Credit,POS receipt,82650
+09-06-2026,1630.0,Credit,Shop sale,63280
+09-06-2026,510.0,Debit,Mobile easyload topup,62340
+09-06-2026,1060.0,Debit,Wholesale stock,48610
+09-06-2026,620.0,Debit,Fuel,36000
+10-06-2026,1070.0,Credit,Cash in from Bilal,25790
+10-06-2026,1260.0,Credit,Shop sale,29030
+10-06-2026,1370.0,Credit,Cash in from Bilal,54430
+10-06-2026,1810.0,Credit,P2P received wallet,75560
+10-06-2026,1160.0,Credit,POS receipt,84740
+10-06-2026,670.0,Debit,Wholesale stock,72110
+11-06-2026,1310.0,Credit,Transfer received,57390
+11-06-2026,1590.0,Credit,Shop sale,79440
+11-06-2026,670.0,Debit,Fuel,53020
+11-06-2026,1360.0,Debit,Atta flour,37560
+11-06-2026,360.0,Debit,Mobile easyload topup,37200
+12-06-2026,810.0,Debit,Transfer sent,59400
+13-06-2026,1050.0,Credit,QR sale customer,77850
+13-06-2026,930.0,Credit,POS receipt,83580
+13-06-2026,970.0,Debit,Transfer sent,76080
+13-06-2026,620.0,Debit,P2P sent,70200
+13-06-2026,550.0,Debit,Mobile easyload topup,62850
+13-06-2026,2610.0,Debit,IESCO bijli bill,56220
+13-06-2026,440.0,Debit,Mobile easyload topup,45260
+15-06-2026,930.0,Debit,Atta flour,81260
+15-06-2026,1070.0,Debit,Rashan grocery kharcha,72780
+16-06-2026,580.0,Debit,Wholesale stock,64560
+17-06-2026,1350.0,Credit,POS receipt,30380
+17-06-2026,1260.0,Debit,Rashan grocery kharcha,77380
+17-06-2026,1090.0,Debit,Wholesale stock,47520
+17-06-2026,2040.0,Debit,IESCO bijli bill,33960
+18-06-2026,1510.0,Credit,POS receipt,24720
+18-06-2026,1590.0,Credit,POS receipt,34430
+18-06-2026,1050.0,Credit,Shop sale,70510
+18-06-2026,480.0,Debit,Mobile easyload topup,82920
+18-06-2026,770.0,Debit,Misc kharcha,53690
+18-06-2026,920.0,Debit,P2P sent,46600
+18-06-2026,550.0,Debit,Misc kharcha,42750
+19-06-2026,1650.0,Credit,P2P received wallet,39900
+19-06-2026,1800.0,Credit,Shop sale,53060
+19-06-2026,1210.0,Credit,QR sale customer,65810
+19-06-2026,180.0,Debit,Mobile easyload topup,52840
+19-06-2026,2210.0,Debit,IESCO bijli bill,40540
+20-06-2026,920.0,Credit,Cash in from Bilal,43450
+20-06-2026,570.0,Debit,Wholesale stock,67030
+21-06-2026,1770.0,Credit,P2P received wallet,61650
+21-06-2026,2620.0,Debit,IESCO bijli bill,78640
+22-06-2026,1840.0,Credit,Cash in from Bilal,36270
+22-06-2026,1730.0,Credit,Shop sale,42530
+22-06-2026,730.0,Debit,Rashan grocery kharcha,82190
+22-06-2026,1230.0,Debit,Atta flour,50190
+22-06-2026,1040.0,Debit,Fuel,38920
+23-06-2026,1930.0,Credit,Transfer received,67740
+23-06-2026,1340.0,Debit,Wholesale stock,83400
+23-06-2026,620.0,Debit,Rashan grocery kharcha,69580
+23-06-2026,1160.0,Debit,Rashan grocery kharcha,63400
+23-06-2026,560.0,Debit,Rashan grocery kharcha,54460
+23-06-2026,580.0,Debit,Transfer sent,39960
+23-06-2026,580.0,Debit,Mobile easyload topup,36620
+24-06-2026,1640.0,Credit,Transfer received,32020
+24-06-2026,1720.0,Credit,Transfer received,69460
+27-06-2026,1130.0,Credit,P2P received wallet,35920
+27-06-2026,1720.0,Credit,Shop sale,42930
+27-06-2026,1700.0,Credit,Shop sale,86000
+27-06-2026,890.0,Debit,Transfer sent,58040
+27-06-2026,960.0,Debit,Misc kharcha,55380
+28-06-2026,1650.0,Credit,Cash in from Bilal,59990
+28-06-2026,700.0,Debit,Wholesale stock,58930
+28-06-2026,1220.0,Debit,Wholesale stock,56340
+28-06-2026,810.0,Debit,P2P sent,47980
+29-06-2026,1390.0,Debit,Rashan grocery kharcha,81310
+29-06-2026,790.0,Debit,Fuel,60890
+29-06-2026,2490.0,Debit,IESCO bijli bill,44990
+30-06-2026,1380.0,Credit,Shop sale,39360
+30-06-2026,1360.0,Credit,QR sale customer,74500
+30-06-2026,1270.0,Credit,POS receipt,78310
+30-06-2026,1180.0,Debit,Wholesale stock,91130
+30-06-2026,490.0,Debit,Fuel,87350
+30-06-2026,1360.0,Debit,Rashan grocery kharcha,69200
+30-06-2026,190.0,Debit,Mobile easyload topup,69010
+01-07-2026,1100.0,Debit,Rashan grocery kharcha,87840
+01-07-2026,1030.0,Debit,Rashan grocery kharcha,75150
+01-07-2026,480.0,Debit,Fuel,57560
+01-07-2026,710.0,Debit,Rashan grocery kharcha,52550
+02-07-2026,670.0,Debit,Transfer sent,92310
+02-07-2026,960.0,Debit,P2P sent,71840
+02-07-2026,1280.0,Debit,Rashan grocery kharcha,48790
+02-07-2026,1210.0,Debit,Atta flour,43780
+03-07-2026,1460.0,Credit,Shop sale,66860
+03-07-2026,570.0,Debit,Misc kharcha,51980
+04-07-2026,1270.0,Credit,POS receipt,44200
+04-07-2026,1880.0,Credit,Transfer received,61870
+04-07-2026,710.0,Debit,Atta flour,74440
+05-07-2026,1850.0,Credit,Transfer received,41210
+05-07-2026,860.0,Credit,P2P received wallet,65400
+05-07-2026,1060.0,Credit,Cash in from Bilal,77040
+05-07-2026,950.0,Debit,Rashan grocery kharcha,70560
+05-07-2026,1020.0,Debit,Misc kharcha,59870
+05-07-2026,1910.0,Debit,IESCO bijli bill,50070
+05-07-2026,790.0,Debit,Fuel,42990
+06-07-2026,830.0,Credit,Cash in from Bilal,34790
+06-07-2026,840.0,Credit,Shop sale,37980
+07-07-2026,1220.0,Credit,Shop sale,37140
+07-07-2026,1890.0,Credit,POS receipt,48600
+07-07-2026,2580.0,Debit,IESCO bijli bill,64080
+08-07-2026,850.0,Credit,Shop sale,51420
+08-07-2026,1880.0,Credit,Shop sale,87880
+08-07-2026,400.0,Debit,Fuel,83980
+09-07-2026,2080.0,Credit,Cash in from Bilal,68940
+10-07-2026,2120.0,Credit,POS receipt,91880
+10-07-2026,1110.0,Debit,Atta flour,84930
+10-07-2026,1870.0,Debit,IESCO bijli bill,62210
+11-07-2026,1970.0,Credit,Shop sale,81490
+11-07-2026,1790.0,Debit,IESCO bijli bill,88940
+12-07-2026,690.0,Debit,Fuel,76180
+12-07-2026,850.0,Debit,Rashan grocery kharcha,54530
+14-07-2026,980.0,Credit,POS receipt,54430
+14-07-2026,1840.0,Credit,Cash in from Bilal,70780
+14-07-2026,1070.0,Credit,Shop sale,73140
+14-07-2026,1880.0,Credit,Cash in from Bilal,83370
+14-07-2026,930.0,Credit,Cash in from Bilal,84300
+14-07-2026,1310.0,Debit,Rashan grocery kharcha,86040
+14-07-2026,550.0,Debit,P2P sent,84380
+14-07-2026,380.0,Debit,Misc kharcha,53260
+15-07-2026,2030.0,Credit,Transfer received,53450
+15-07-2026,1260.0,Credit,Cash in from Bilal,64540
+15-07-2026,540.0,Debit,Mobile easyload topup,92980
+16-07-2026,1380.0,Credit,QR sale customer,45580
+17-07-2026,1130.0,Credit,POS receipt,46710
+17-07-2026,1280.0,Debit,Atta flour,82700
+17-07-2026,1360.0,Debit,Atta flour,79950
+17-07-2026,570.0,Debit,Atta flour,79380
+17-07-2026,500.0,Debit,Misc kharcha,47480
+18-07-2026,1040.0,Credit,QR sale customer,89760
+18-07-2026,680.0,Debit,Atta flour,78700
+19-07-2026,530.0,Debit,Fuel,61680
+20-07-2026,990.0,Credit,Shop sale,49590
+20-07-2026,1880.0,Credit,Shop sale,56310
+20-07-2026,1290.0,Credit,Shop sale,72070
+20-07-2026,1480.0,Credit,Shop sale,75980
+20-07-2026,840.0,Credit,P2P received wallet,88720
+20-07-2026,400.0,Debit,Mobile easyload topup,90730
+21-07-2026,980.0,Credit,Shop sale,50570
+21-07-2026,890.0,Debit,Wholesale stock,53640
+22-07-2026,2030.0,Credit,Cash in from Bilal,58340
+22-07-2026,1210.0,Credit,Shop sale,79520
+22-07-2026,740.0,Debit,Transfer sent,72800
+22-07-2026,1070.0,Debit,Transfer sent,66660
+23-07-2026,1410.0,Credit,Shop sale,63280
+23-07-2026,1640.0,Credit,POS receipt,93520
+23-07-2026,330.0,Debit,Mobile easyload topup,71510
+23-07-2026,1280.0,Debit,Rashan grocery kharcha,67730
+23-07-2026,240.0,Debit,Mobile easyload topup,59630
+24-07-2026,1830.0,Debit,IESCO bijli bill,76870
+24-07-2026,900.0,Debit,Rashan grocery kharcha,73540

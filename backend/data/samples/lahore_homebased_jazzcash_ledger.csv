@@ -1,0 +1,121 @@
+txn_date,amount,type,counterparty,balance
+28-04-2026,2580.0,Credit,Cash in from Bilal,15370
+28-04-2026,1080.0,Debit,Wholesale stock,20460
+29-04-2026,3060.0,Credit,P2P received wallet,20390
+29-04-2026,4160.0,Debit,Committee BC contribution,23750
+30-04-2026,1440.0,Debit,Wholesale stock,21540
+01-05-2026,1790.0,Credit,Cash in from Bilal,27260
+01-05-2026,1660.0,Debit,Atta flour,50240
+02-05-2026,2280.0,Credit,P2P received wallet,49850
+02-05-2026,2830.0,Credit,Shop sale,52680
+02-05-2026,1120.0,Debit,Transfer sent,47570
+02-05-2026,1230.0,Debit,Wholesale stock,43890
+02-05-2026,2720.0,Debit,Committee BC contribution,34830
+03-05-2026,3500.0,Credit,Cash in from Bilal,25470
+03-05-2026,3910.0,Debit,Committee BC contribution,29400
+04-05-2026,1960.0,Credit,POS receipt,12790
+05-05-2026,560.0,Debit,Misc kharcha,49680
+06-05-2026,1960.0,Credit,P2P received wallet,17330
+08-05-2026,3380.0,Credit,P2P received wallet,47570
+09-05-2026,3530.0,Credit,QR sale customer,32230
+09-05-2026,2480.0,Credit,P2P received wallet,40710
+09-05-2026,990.0,Debit,Rashan grocery kharcha,48690
+10-05-2026,770.0,Debit,Fuel,22980
+11-05-2026,780.0,Debit,Atta flour,51900
+11-05-2026,1250.0,Debit,Fuel,46320
+11-05-2026,1200.0,Debit,Transfer sent,45120
+12-05-2026,3480.0,Credit,QR sale customer,44190
+13-05-2026,340.0,Debit,Mobile easyload topup,37550
+15-05-2026,3140.0,Debit,LESCO bijli bill,40750
+15-05-2026,1470.0,Debit,P2P sent,37890
+15-05-2026,140.0,Debit,Mobile easyload topup,27910
+16-05-2026,3270.0,Credit,Shop sale,10830
+16-05-2026,2620.0,Debit,LESCO bijli bill,17840
+17-05-2026,1440.0,Credit,Cash in from Bilal,28700
+18-05-2026,2180.0,Credit,Cash in from Bilal,36240
+20-05-2026,1830.0,Credit,Shop sale,34060
+20-05-2026,1520.0,Debit,Wholesale stock,33310
+21-05-2026,1990.0,Credit,POS receipt,38230
+22-05-2026,1350.0,Debit,Atta flour,28050
+23-05-2026,1390.0,Debit,Atta flour,39360
+24-05-2026,1580.0,Credit,P2P received wallet,21970
+29-05-2026,2220.0,Credit,POS receipt,37360
+30-05-2026,1200.0,Debit,Wholesale stock,54380
+31-05-2026,2630.0,Credit,Cash in from Bilal,64020
+31-05-2026,680.0,Debit,Transfer sent,30590
+01-06-2026,2950.0,Credit,Shop sale,31610
+01-06-2026,3240.0,Debit,LESCO bijli bill,35740
+02-06-2026,3530.0,Credit,Transfer received,35140
+02-06-2026,2780.0,Credit,QR sale customer,53280
+02-06-2026,870.0,Debit,Fuel,52920
+03-06-2026,1380.0,Debit,Misc kharcha,59010
+04-06-2026,1650.0,Credit,Cash in from Bilal,23030
+04-06-2026,1770.0,Credit,Transfer received,44010
+04-06-2026,1560.0,Debit,Atta flour,47620
+05-06-2026,590.0,Debit,Mobile easyload topup,53790
+05-06-2026,1750.0,Debit,Wholesale stock,51170
+05-06-2026,290.0,Debit,Mobile easyload topup,47330
+05-06-2026,2430.0,Debit,LESCO bijli bill,38980
+06-06-2026,4470.0,Debit,Committee BC contribution,31270
+07-06-2026,3460.0,Credit,P2P received wallet,61390
+08-06-2026,1830.0,Credit,QR sale customer,42240
+09-06-2026,3050.0,Credit,Shop sale,40410
+10-06-2026,2800.0,Credit,Shop sale,57930
+11-06-2026,2820.0,Debit,LESCO bijli bill,56190
+11-06-2026,3980.0,Debit,Committee BC contribution,43350
+12-06-2026,790.0,Debit,Rashan grocery kharcha,60390
+13-06-2026,1850.0,Credit,Cash in from Bilal,55130
+13-06-2026,2420.0,Debit,Committee BC contribution,61180
+14-06-2026,3990.0,Debit,Committee BC contribution,26600
+15-06-2026,2360.0,Credit,Cash in from Bilal,28660
+15-06-2026,420.0,Debit,Mobile easyload topup,63600
+15-06-2026,1410.0,Debit,P2P sent,25190
+16-06-2026,1240.0,Debit,Transfer sent,49930
+18-06-2026,3440.0,Credit,Cash in from Bilal,50500
+21-06-2026,1940.0,Debit,Wholesale stock,41410
+22-06-2026,1470.0,Credit,Transfer received,21380
+22-06-2026,3050.0,Credit,P2P received wallet,47060
+22-06-2026,750.0,Debit,Fuel,49180
+23-06-2026,2070.0,Credit,Shop sale,19910
+23-06-2026,610.0,Debit,P2P sent,55580
+24-06-2026,3270.0,Credit,Transfer received,26300
+27-06-2026,670.0,Debit,P2P sent,52820
+27-06-2026,1360.0,Debit,Transfer sent,51460
+27-06-2026,1610.0,Debit,Atta flour,42890
+27-06-2026,1060.0,Debit,Atta flour,41330
+28-06-2026,640.0,Debit,Misc kharcha,65910
+30-06-2026,3050.0,Credit,P2P received wallet,28240
+30-06-2026,3460.0,Credit,Cash in from Bilal,37060
+30-06-2026,2470.0,Credit,Shop sale,53920
+30-06-2026,790.0,Debit,Fuel,60040
+01-07-2026,1540.0,Credit,QR sale customer,55460
+05-07-2026,2650.0,Credit,POS receipt,63100
+05-07-2026,1080.0,Debit,P2P sent,55320
+07-07-2026,2840.0,Debit,LESCO bijli bill,37690
+10-07-2026,2080.0,Credit,Shop sale,30320
+10-07-2026,1460.0,Credit,Shop sale,31780
+10-07-2026,2780.0,Credit,Transfer received,48860
+10-07-2026,1280.0,Debit,Wholesale stock,64630
+10-07-2026,1120.0,Debit,Transfer sent,61870
+11-07-2026,3580.0,Credit,POS receipt,68220
+12-07-2026,3410.0,Credit,P2P received wallet,58870
+12-07-2026,1640.0,Debit,Atta flour,62990
+12-07-2026,1830.0,Debit,Rashan grocery kharcha,53490
+13-07-2026,1540.0,Credit,Shop sale,64640
+16-07-2026,800.0,Debit,Rashan grocery kharcha,40530
+17-07-2026,1580.0,Debit,Rashan grocery kharcha,56610
+18-07-2026,1580.0,Credit,Transfer received,60450
+18-07-2026,1040.0,Debit,Rashan grocery kharcha,60830
+18-07-2026,1250.0,Debit,Fuel,36440
+20-07-2026,1850.0,Debit,Atta flour,58190
+21-07-2026,1820.0,Credit,Shop sale,33600
+21-07-2026,4400.0,Debit,Committee BC contribution,44500
+21-07-2026,500.0,Debit,Mobile easyload topup,42390
+22-07-2026,2040.0,Credit,P2P received wallet,40620
+22-07-2026,3170.0,Credit,Cash in from Bilal,43790
+23-07-2026,2290.0,Credit,POS receipt,46080
+23-07-2026,2590.0,Credit,POS receipt,51450
+24-07-2026,1520.0,Credit,Shop sale,38580
+24-07-2026,1670.0,Debit,Rashan grocery kharcha,66550
+24-07-2026,210.0,Debit,Mobile easyload topup,56400
+24-07-2026,2560.0,Debit,LESCO bijli bill,48900
