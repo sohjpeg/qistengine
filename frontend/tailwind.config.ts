@@ -46,20 +46,11 @@ const config: Config = {
       pop: "var(--shadow-pop)",
       modal: "var(--shadow-modal)",
     },
-    spacing: {
-      "0": "0px",
-      "1": "4px",
-      "2": "8px",
-      "3": "12px",
-      "4": "16px",
-      "5": "20px",
-      "6": "24px",
-      "8": "32px",
-      "10": "40px",
-      "12": "48px",
-      "16": "64px",
-      px: "1px",
-    },
+    // Spacing keeps Tailwind's standard 4px-based scale (a documented scale, not
+    // arbitrary values). Layout rhythm sticks to 4 8 12 16 20 24 32 40 48 64;
+    // the fractional steps are used only for sub-4px icon/label gaps. Bracketed
+    // arbitrary spacing (p-[13px]) is banned; component heights the spec fixes in
+    // px (34/36/38/44/52) are the one allowed use of bracket values.
     fontFamily: {
       sans: ["var(--font-plex-sans)", "system-ui", "sans-serif"],
       mono: ["var(--font-plex-mono)", "ui-monospace", "monospace"],
