@@ -376,73 +376,73 @@
    },
    "monthly_series": [
     {
-     "month": "2025-08",
-     "inflow_pkr": 42587.0,
-     "outflow_pkr": 30492.0,
+     "month": "2025-09",
+     "inflow_pkr": 44829.0,
+     "outflow_pkr": 31274.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2025-09",
+     "month": "2025-10",
      "inflow_pkr": 44846.0,
      "outflow_pkr": 30828.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2025-10",
+     "month": "2025-11",
      "inflow_pkr": 59591.0,
      "outflow_pkr": 35865.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2025-11",
+     "month": "2025-12",
      "inflow_pkr": 67567.0,
      "outflow_pkr": 31090.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2025-12",
+     "month": "2026-01",
      "inflow_pkr": 51659.0,
      "outflow_pkr": 30697.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2026-01",
+     "month": "2026-02",
      "inflow_pkr": 49888.0,
      "outflow_pkr": 35504.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2026-02",
-     "inflow_pkr": 44089.0,
-     "outflow_pkr": 32512.0,
+     "month": "2026-03",
+     "inflow_pkr": 46734.0,
+     "outflow_pkr": 33487.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2026-03",
+     "month": "2026-04",
      "inflow_pkr": 47563.0,
      "outflow_pkr": 33505.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2026-04",
+     "month": "2026-05",
      "inflow_pkr": 39099.0,
      "outflow_pkr": 33808.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2026-05",
-     "inflow_pkr": 45678.0,
-     "outflow_pkr": 31224.0,
-     "utility_paid_on_time": true
-    },
-    {
      "month": "2026-06",
-     "inflow_pkr": 50576.0,
-     "outflow_pkr": 35632.0,
+     "inflow_pkr": 43092.0,
+     "outflow_pkr": 30315.0,
      "utility_paid_on_time": true
     },
     {
      "month": "2026-07",
+     "inflow_pkr": 48047.0,
+     "outflow_pkr": 34742.0,
+     "utility_paid_on_time": true
+    },
+    {
+     "month": "2026-08",
      "inflow_pkr": 39845.0,
      "outflow_pkr": 32095.0,
      "utility_paid_on_time": true
@@ -450,7 +450,7 @@
    ],
    "data_gaps": [],
    "model_version": "qistengine-scorecard-v1.0.0",
-   "scored_at": "2026-08-27T18:00:47Z",
+   "scored_at": "2026-09-03T16:54:19Z",
    "disclaimer": "Demonstration model trained on synthetic data. Not a regulated credit decision."
   }
  },
@@ -822,73 +822,73 @@
    },
    "monthly_series": [
     {
-     "month": "2025-08",
-     "inflow_pkr": 146344.0,
-     "outflow_pkr": 222647.0,
+     "month": "2025-09",
+     "inflow_pkr": 154046.0,
+     "outflow_pkr": 228356.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2025-09",
+     "month": "2025-10",
      "inflow_pkr": 305976.0,
      "outflow_pkr": 227956.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2025-10",
+     "month": "2025-11",
      "inflow_pkr": 174027.0,
      "outflow_pkr": 216105.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2025-11",
+     "month": "2025-12",
      "inflow_pkr": 222221.0,
      "outflow_pkr": 224988.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2025-12",
+     "month": "2026-01",
      "inflow_pkr": 294547.0,
      "outflow_pkr": 196636.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2026-01",
+     "month": "2026-02",
      "inflow_pkr": 194107.0,
      "outflow_pkr": 217168.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2026-02",
-     "inflow_pkr": 226899.0,
-     "outflow_pkr": 223592.0,
+     "month": "2026-03",
+     "inflow_pkr": 267741.0,
+     "outflow_pkr": 243715.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2026-03",
+     "month": "2026-04",
      "inflow_pkr": 259094.0,
      "outflow_pkr": 240550.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2026-04",
+     "month": "2026-05",
      "inflow_pkr": 403871.0,
      "outflow_pkr": 240664.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2026-05",
-     "inflow_pkr": 399740.0,
-     "outflow_pkr": 209647.0,
-     "utility_paid_on_time": true
-    },
-    {
      "month": "2026-06",
-     "inflow_pkr": 308257.0,
-     "outflow_pkr": 204903.0,
+     "inflow_pkr": 338763.0,
+     "outflow_pkr": 192336.0,
      "utility_paid_on_time": true
     },
     {
      "month": "2026-07",
+     "inflow_pkr": 292844.0,
+     "outflow_pkr": 199781.0,
+     "utility_paid_on_time": true
+    },
+    {
+     "month": "2026-08",
      "inflow_pkr": 215741.0,
      "outflow_pkr": 184639.0,
      "utility_paid_on_time": false
@@ -896,7 +896,7 @@
    ],
    "data_gaps": [],
    "model_version": "qistengine-scorecard-v1.0.0",
-   "scored_at": "2026-08-27T18:00:47Z",
+   "scored_at": "2026-09-03T16:54:19Z",
    "disclaimer": "Demonstration model trained on synthetic data. Not a regulated credit decision."
   }
  },
@@ -1268,73 +1268,73 @@
    },
    "monthly_series": [
     {
-     "month": "2025-08",
-     "inflow_pkr": 58004.0,
-     "outflow_pkr": 57207.0,
+     "month": "2025-09",
+     "inflow_pkr": 61056.0,
+     "outflow_pkr": 58674.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2025-09",
+     "month": "2025-10",
      "inflow_pkr": 71379.0,
      "outflow_pkr": 53698.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2025-10",
+     "month": "2025-11",
      "inflow_pkr": 56204.0,
      "outflow_pkr": 55168.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2025-11",
+     "month": "2025-12",
      "inflow_pkr": 45681.0,
      "outflow_pkr": 59013.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2025-12",
+     "month": "2026-01",
      "inflow_pkr": 71788.0,
      "outflow_pkr": 50927.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2026-01",
+     "month": "2026-02",
      "inflow_pkr": 68209.0,
      "outflow_pkr": 51495.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2026-02",
-     "inflow_pkr": 57404.0,
-     "outflow_pkr": 52032.0,
+     "month": "2026-03",
+     "inflow_pkr": 60848.0,
+     "outflow_pkr": 53593.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2026-03",
+     "month": "2026-04",
      "inflow_pkr": 66196.0,
      "outflow_pkr": 59415.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2026-04",
+     "month": "2026-05",
      "inflow_pkr": 46525.0,
      "outflow_pkr": 52207.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2026-05",
-     "inflow_pkr": 82002.0,
-     "outflow_pkr": 56116.0,
+     "month": "2026-06",
+     "inflow_pkr": 77360.0,
+     "outflow_pkr": 54482.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2026-06",
-     "inflow_pkr": 53417.0,
-     "outflow_pkr": 56008.0,
+     "month": "2026-07",
+     "inflow_pkr": 50746.0,
+     "outflow_pkr": 54608.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2026-07",
+     "month": "2026-08",
      "inflow_pkr": 73573.0,
      "outflow_pkr": 55036.0,
      "utility_paid_on_time": true
@@ -1342,7 +1342,7 @@
    ],
    "data_gaps": [],
    "model_version": "qistengine-scorecard-v1.0.0",
-   "scored_at": "2026-08-27T18:00:47Z",
+   "scored_at": "2026-09-03T16:54:19Z",
    "disclaimer": "Demonstration model trained on synthetic data. Not a regulated credit decision."
   }
  },
@@ -1683,73 +1683,73 @@
    },
    "monthly_series": [
     {
-     "month": "2025-08",
-     "inflow_pkr": 51687.0,
-     "outflow_pkr": 32388.0,
+     "month": "2025-09",
+     "inflow_pkr": 54408.0,
+     "outflow_pkr": 33218.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2025-09",
+     "month": "2025-10",
      "inflow_pkr": 44566.0,
      "outflow_pkr": 30922.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2025-10",
+     "month": "2025-11",
      "inflow_pkr": 45775.0,
      "outflow_pkr": 35065.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2025-11",
+     "month": "2025-12",
      "inflow_pkr": 56453.0,
      "outflow_pkr": 35878.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2025-12",
+     "month": "2026-01",
      "inflow_pkr": 57824.0,
      "outflow_pkr": 30629.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2026-01",
+     "month": "2026-02",
      "inflow_pkr": 56281.0,
      "outflow_pkr": 34254.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2026-02",
-     "inflow_pkr": 63715.0,
-     "outflow_pkr": 30795.0,
+     "month": "2026-03",
+     "inflow_pkr": 67538.0,
+     "outflow_pkr": 31718.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2026-03",
+     "month": "2026-04",
      "inflow_pkr": 58465.0,
      "outflow_pkr": 33394.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2026-04",
+     "month": "2026-05",
      "inflow_pkr": 58652.0,
      "outflow_pkr": 37951.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2026-05",
-     "inflow_pkr": 59947.0,
-     "outflow_pkr": 32491.0,
-     "utility_paid_on_time": true
-    },
-    {
      "month": "2026-06",
-     "inflow_pkr": 62052.0,
-     "outflow_pkr": 31674.0,
+     "inflow_pkr": 56554.0,
+     "outflow_pkr": 31545.0,
      "utility_paid_on_time": true
     },
     {
      "month": "2026-07",
+     "inflow_pkr": 58950.0,
+     "outflow_pkr": 30882.0,
+     "utility_paid_on_time": true
+    },
+    {
+     "month": "2026-08",
      "inflow_pkr": 57062.0,
      "outflow_pkr": 29971.0,
      "utility_paid_on_time": true
@@ -1757,7 +1757,7 @@
    ],
    "data_gaps": [],
    "model_version": "qistengine-scorecard-v1.0.0",
-   "scored_at": "2026-08-27T18:00:47Z",
+   "scored_at": "2026-09-03T16:54:19Z",
    "disclaimer": "Demonstration model trained on synthetic data. Not a regulated credit decision."
   }
  },
@@ -2138,73 +2138,73 @@
    },
    "monthly_series": [
     {
-     "month": "2025-08",
-     "inflow_pkr": 29274.0,
-     "outflow_pkr": 28132.0,
+     "month": "2025-09",
+     "inflow_pkr": 35700.0,
+     "outflow_pkr": 30915.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2025-09",
+     "month": "2025-10",
      "inflow_pkr": 63683.0,
      "outflow_pkr": 30561.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2025-10",
+     "month": "2025-11",
      "inflow_pkr": 28269.0,
      "outflow_pkr": 32704.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2025-11",
+     "month": "2025-12",
      "inflow_pkr": 12875.0,
      "outflow_pkr": 29465.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2025-12",
+     "month": "2026-01",
      "inflow_pkr": 30828.0,
      "outflow_pkr": 28806.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2026-01",
+     "month": "2026-02",
      "inflow_pkr": 38999.0,
      "outflow_pkr": 31141.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2026-02",
-     "inflow_pkr": 31610.0,
-     "outflow_pkr": 32548.0,
+     "month": "2026-03",
+     "inflow_pkr": 33506.0,
+     "outflow_pkr": 33524.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2026-03",
+     "month": "2026-04",
      "inflow_pkr": 33101.0,
      "outflow_pkr": 35446.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2026-04",
+     "month": "2026-05",
      "inflow_pkr": 36536.0,
      "outflow_pkr": 31334.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2026-05",
-     "inflow_pkr": 47980.0,
-     "outflow_pkr": 29683.0,
+     "month": "2026-06",
+     "inflow_pkr": 45264.0,
+     "outflow_pkr": 28819.0,
      "utility_paid_on_time": false
     },
     {
-     "month": "2026-06",
-     "inflow_pkr": 26118.0,
-     "outflow_pkr": 32153.0,
+     "month": "2026-07",
+     "inflow_pkr": 21417.0,
+     "outflow_pkr": 29259.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2026-07",
+     "month": "2026-08",
      "inflow_pkr": 16895.0,
      "outflow_pkr": 26633.0,
      "utility_paid_on_time": true
@@ -2212,7 +2212,7 @@
    ],
    "data_gaps": [],
    "model_version": "qistengine-scorecard-v1.0.0",
-   "scored_at": "2026-08-27T18:00:47Z",
+   "scored_at": "2026-09-03T16:54:19Z",
    "disclaimer": "Demonstration model trained on synthetic data. Not a regulated credit decision."
   }
  },
@@ -2586,73 +2586,73 @@
    },
    "monthly_series": [
     {
-     "month": "2025-08",
-     "inflow_pkr": 56825.0,
-     "outflow_pkr": 45152.0,
+     "month": "2025-09",
+     "inflow_pkr": 59815.0,
+     "outflow_pkr": 46310.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2025-09",
+     "month": "2025-10",
      "inflow_pkr": 39325.0,
      "outflow_pkr": 42461.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2025-10",
+     "month": "2025-11",
      "inflow_pkr": 39508.0,
      "outflow_pkr": 40907.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2025-11",
+     "month": "2025-12",
      "inflow_pkr": 42083.0,
      "outflow_pkr": 43691.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2025-12",
+     "month": "2026-01",
      "inflow_pkr": 39005.0,
      "outflow_pkr": 43038.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2026-01",
+     "month": "2026-02",
      "inflow_pkr": 40354.0,
      "outflow_pkr": 42342.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2026-02",
-     "inflow_pkr": 56160.0,
-     "outflow_pkr": 40293.0,
+     "month": "2026-03",
+     "inflow_pkr": 66269.0,
+     "outflow_pkr": 43920.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2026-03",
+     "month": "2026-04",
      "inflow_pkr": 82212.0,
      "outflow_pkr": 46427.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2026-04",
+     "month": "2026-05",
      "inflow_pkr": 70116.0,
      "outflow_pkr": 47461.0,
      "utility_paid_on_time": true
     },
     {
-     "month": "2026-05",
-     "inflow_pkr": 62050.0,
-     "outflow_pkr": 47961.0,
-     "utility_paid_on_time": true
-    },
-    {
      "month": "2026-06",
-     "inflow_pkr": 52277.0,
-     "outflow_pkr": 42480.0,
+     "inflow_pkr": 52585.0,
+     "outflow_pkr": 44001.0,
      "utility_paid_on_time": true
     },
     {
      "month": "2026-07",
+     "inflow_pkr": 49663.0,
+     "outflow_pkr": 41418.0,
+     "utility_paid_on_time": true
+    },
+    {
+     "month": "2026-08",
      "inflow_pkr": 41805.0,
      "outflow_pkr": 41404.0,
      "utility_paid_on_time": true
@@ -2665,7 +2665,7 @@
     }
    ],
    "model_version": "qistengine-scorecard-v1.0.0",
-   "scored_at": "2026-08-27T18:00:47Z",
+   "scored_at": "2026-09-03T16:54:19Z",
    "disclaimer": "Demonstration model trained on synthetic data. Not a regulated credit decision."
   }
  }

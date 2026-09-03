@@ -142,9 +142,9 @@ function Th({
   onClick?: () => void;
 }) {
   return (
-    <th className={cn("h-9 px-3 text-start font-medium", className)}>
+    <th className={cn("h-9 px-3 text-start font-medium uppercase", className)}>
       {sortable ? (
-        <button onClick={onClick} className="inline-flex items-center gap-1 hover:text-ink">
+        <button onClick={onClick} className="inline-flex items-center gap-1 uppercase hover:text-ink">
           {children}
           {active ? (
             order === "desc" ? (

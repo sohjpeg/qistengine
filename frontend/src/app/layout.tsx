@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Toaster } from "sonner";
 import { SiteHeader } from "@/components/SiteHeader";
+import { SuppressChartNoise } from "@/components/SuppressChartNoise";
 import "./globals.css";
 
 const plexSans = localFont({
@@ -53,6 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${plexSans.variable} ${plexMono.variable} ${plexSerif.variable} ${nastaliq.variable}`}
     >
       <body>
+        <SuppressChartNoise />
         <SiteHeader />
         <main className="mx-auto w-full max-w-content px-6 py-6">{children}</main>
         <Toaster

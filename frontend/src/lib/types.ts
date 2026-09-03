@@ -238,6 +238,31 @@ export interface MetricsResponse {
   disclaimer: string;
 }
 
+export interface FairnessGroup {
+  group: string;
+  n: number;
+  approval_rate: number;
+  approval_ratio_vs_best: number;
+  observed_default_rate: number;
+}
+
+export interface FairnessSummary {
+  source: string;
+  generated_at: string;
+  approve_min_score: number;
+  portfolio_approval_rate: number;
+  portfolio_false_positive_rate: number;
+  four_fifths_pass: boolean;
+  flagged_groups: {
+    dimension: string;
+    group: string;
+    approval_rate: number;
+    approval_ratio_vs_best: number;
+    observed_default_rate: number;
+  }[];
+  groups: Record<string, FairnessGroup[]>;
+}
+
 export interface ModelInfoResponse {
   version: string;
   trained_at: string | null;
@@ -247,7 +272,7 @@ export interface ModelInfoResponse {
   metrics: Record<string, number>;
   decile_lift: { decile: number; n: number; default_rate: number; lift: number }[];
   hyperparameters: Record<string, unknown>;
-  fairness_summary: { source: string; headlines: string[] } | null;
+  fairness_summary: FairnessSummary | null;
 }
 
 export interface MockProfile {

@@ -23,6 +23,10 @@ from app.services.mock_profiles import MOCK_PROFILES  # noqa: E402
 
 SAMPLES = BACKEND_ROOT / "data" / "samples"
 
+# Fixed reference date so the generated files are byte-reproducible run to run
+# (no git churn) and the demo always shows the same bill dates.
+REF_DATE = date(2026, 8, 20)
+
 # which profile id -> (bill format, wallet)
 LAYOUT = {
     "ayesha-lahore-tailoring": ("pdf", "JazzCash"),
@@ -95,7 +99,7 @@ def _png_bytes(lines: list[str]) -> bytes:
 def _bill_lines(profile: dict) -> list[str]:
     bf = profile["bill_fields"]
     rng = random.Random(profile["id"])
-    due = date.today().replace(day=15) - timedelta(days=rng.randint(0, 25))
+    due = REF_DATE.replace(day=15) - timedelta(days=rng.randint(0, 25))
     on_time = profile["features"].get("utility_on_time_ratio", 0.7)
     paid = due - timedelta(days=rng.randint(1, 4)) if rng.random() < on_time else due + timedelta(days=rng.randint(2, 18))
     arrears = int(bf.get("arrears", 0))
@@ -134,7 +138,7 @@ def _txn_rows(profile: dict, wallet: str) -> list[dict]:
     committee = f.get("committee_participation", 0) >= 0.5
     rows: list[dict] = []
     balance = max(1500, inflow * f.get("balance_floor_ratio", 0.06) + 2500)
-    start = date.today().replace(day=1) - timedelta(days=95)
+    start = REF_DATE.replace(day=1) - timedelta(days=95)
 
     # header aliases vary by wallet so the parser's tolerance is exercised
     for month in range(3):

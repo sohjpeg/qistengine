@@ -58,13 +58,19 @@ the top three negative drivers as short codes."*
 
 ## 3:30–4:15 — Underwriter view
 
-Back to `/dashboard`.
+Back to `/dashboard`. The six demo profiles sit at the top of the queue, each at
+a stable URL: `/dashboard/<slug>` — `nasreen-multan-homefood`,
+`bilal-karachi-kiryana`, `farhan-rawalpindi-ridehailing`,
+`imran-faisalabad-dailywage`, `ayesha-lahore-tailoring`,
+`zubair-peshawar-autoparts`. Bookmark whichever you plan to open live.
 
 - KPI strip: applications today, approval rate, mean score, portfolio expected
   loss, **override rate** (a governance metric).
-- Filter by band = VERY_HIGH. Open one. In the decision panel choose **Approve**,
-  set an installment above the safe limit → a justification box appears and is
-  required. Enter a reason, record it. Toast confirms **"override recorded"**.
+- Filter by band = VERY_HIGH, or open **Imran** directly. In the decision panel
+  choose **Approve loan** → because he is VERY_HIGH a red **written justification**
+  box appears and blocks the decision until filled. Enter a reason, record it.
+  Toast confirms **"Loan approved · override recorded"** and the panel shows the
+  **OVERRIDE** badge.
 
 ## 4:15–5:00 — Analytics and the model card
 

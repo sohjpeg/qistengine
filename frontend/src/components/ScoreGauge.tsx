@@ -87,7 +87,7 @@ export function ScoreGauge({
       </svg>
       <div className="-mt-10 flex flex-col items-center">
         <span className="font-mono text-score-hero tabular-nums" style={{ color: hex }}>{shown}</span>
-        <span className="mt-1 text-label uppercase text-ink-muted">{BAND_META[band].label}</span>
+        <span className="mt-1 text-mono-sm text-ink-faint">of 850</span>
       </div>
     </div>
   );

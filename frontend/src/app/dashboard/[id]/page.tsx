@@ -112,7 +112,10 @@ export default function ApplicationDetailPage() {
   }
 
   const score = detail.score_result;
-  const ref = `APP-${detail.id.slice(0, 8).toUpperCase()}`;
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-/i.test(detail.id);
+  const ref = isUuid
+    ? `APP-${detail.id.slice(0, 8).toUpperCase()}`
+    : `APP-${detail.id.split("-")[0].toUpperCase()}`;
 
   return (
     <div className="print-page">
@@ -154,16 +157,17 @@ export default function ApplicationDetailPage() {
             </div>
           ) : null}
 
-          <div className="mt-6 grid gap-6 lg:grid-cols-12">
-            {/* left column */}
-            <div className="flex flex-col gap-6 lg:col-span-5">
+          <div className="mt-6 grid items-start gap-6 lg:grid-cols-12">
+            {/* left column — sticks in view while the longer right column scrolls */}
+            <div className="flex flex-col gap-6 lg:col-span-5 lg:sticky lg:top-4 print:!static">
               <Card>
-                <CardBody className="flex flex-col items-center gap-3">
+                <CardBody className="flex flex-col items-center gap-2">
                   <ScoreGauge score={score.score} band={score.risk_band} size="lg" animate />
                   <RiskBadge band={score.risk_band} />
                   <p className="text-center text-caption text-ink-faint">
-                    Probability of default {pct(score.probability_of_default)} · model{" "}
-                    {score.model_version}
+                    {score.band_label} · PD {pct(score.probability_of_default)}
+                    <br />
+                    confidence {pct(score.confidence, 0)} · model {score.model_version}
                   </p>
                 </CardBody>
               </Card>
@@ -224,46 +228,46 @@ export default function ApplicationDetailPage() {
                   <CashflowChart series={score.monthly_series} />
                 </CardBody>
               </Card>
-
-              <Card className="no-print">
-                <CardHeader>
-                  <CardTitle>Documents</CardTitle>
-                </CardHeader>
-                <CardBody>
-                  {detail.documents.length ? (
-                    <Tabs defaultValue={detail.documents[0].id}>
-                      <TabList>
-                        {detail.documents.map((d) => (
-                          <Tab key={d.id} value={d.id}>
-                            {d.doc_type.replace(/_/g, " ")}
-                          </Tab>
-                        ))}
-                      </TabList>
-                      {detail.documents.map((d) => (
-                        <TabPanel key={d.id} value={d.id} className="pt-3">
-                          <p className="mb-2 text-caption text-ink-faint">
-                            {d.filename} · {d.extraction_method} · confidence {pct(d.confidence, 0)}
-                          </p>
-                          <dl className="grid grid-cols-2 gap-x-4 gap-y-1 font-mono text-mono-sm">
-                            {Object.entries(d.extracted_json).map(([k, v]) => (
-                              <div key={k} className="flex justify-between border-b border-rule py-1">
-                                <dt className="text-ink-muted">{k}</dt>
-                                <dd className="text-ink">{String(v)}</dd>
-                              </div>
-                            ))}
-                          </dl>
-                        </TabPanel>
-                      ))}
-                    </Tabs>
-                  ) : (
-                    <p className="text-body text-ink-muted">
-                      No documents attached to this application.
-                    </p>
-                  )}
-                </CardBody>
-              </Card>
             </div>
           </div>
+
+          <Card className="mt-6 no-print">
+            <CardHeader>
+              <CardTitle>Documents</CardTitle>
+            </CardHeader>
+            <CardBody>
+              {detail.documents.length ? (
+                <Tabs defaultValue={detail.documents[0].id}>
+                  <TabList>
+                    {detail.documents.map((d) => (
+                      <Tab key={d.id} value={d.id}>
+                        {d.doc_type.replace(/_/g, " ")}
+                      </Tab>
+                    ))}
+                  </TabList>
+                  {detail.documents.map((d) => (
+                    <TabPanel key={d.id} value={d.id} className="pt-3">
+                      <p className="mb-2 text-caption text-ink-faint">
+                        {d.filename} · {d.extraction_method} · confidence {pct(d.confidence, 0)}
+                      </p>
+                      <dl className="grid gap-x-8 gap-y-1 font-mono text-mono-sm sm:grid-cols-2 lg:grid-cols-3">
+                        {Object.entries(d.extracted_json).map(([k, v]) => (
+                          <div key={k} className="flex justify-between border-b border-rule py-1">
+                            <dt className="text-ink-muted">{k}</dt>
+                            <dd className="text-ink">{String(v)}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </TabPanel>
+                  ))}
+                </Tabs>
+              ) : (
+                <p className="text-body text-ink-muted">
+                  No documents attached to this application.
+                </p>
+              )}
+            </CardBody>
+          </Card>
 
           <Disclaimer className="mt-6" />
           <div className="print-footer">

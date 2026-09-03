@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 from fastapi import APIRouter
 
 from app.ml.registry import registry
@@ -28,12 +30,13 @@ def model_info() -> ModelInfoResponse:
     registry.ensure()
     meta = registry.metadata or {}
     fairness_summary = None
-    fpath = BACKEND_ROOT.parent / "docs" / "RESPONSIBLE_AI.md"
+    fpath = BACKEND_ROOT / "data" / "processed" / "fairness_summary.json"
     if fpath.exists():
-        text = fpath.read_text(encoding="utf-8")
-        # pull the portfolio approval-rate / four-fifths headline lines
-        headline = [ln.strip() for ln in text.splitlines() if "approval rate" in ln.lower() or "four-fifths" in ln.lower()]
-        fairness_summary = {"source": "docs/RESPONSIBLE_AI.md", "headlines": headline[:4]}
+        try:
+            fairness_summary = json.loads(fpath.read_text(encoding="utf-8"))
+            fairness_summary["source"] = "docs/RESPONSIBLE_AI.md"
+        except (json.JSONDecodeError, OSError):
+            fairness_summary = None
 
     return ModelInfoResponse(
         version=registry.version,

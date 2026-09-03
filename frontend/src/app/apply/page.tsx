@@ -227,9 +227,11 @@ export default function ApplyPage() {
               <Field label="Dependents">
                 <input
                   type="number"
+                  min={0}
                   className="qi font-mono"
                   value={form.dependents_count}
-                  onChange={(e) => set("dependents_count", Number(e.target.value))}
+                  onFocus={(e) => e.target.select()}
+                  onChange={(e) => set("dependents_count", Math.max(0, Number(e.target.value) || 0))}
                 />
               </Field>
               <label className="flex items-center gap-2 pt-6 text-body text-ink">
@@ -316,9 +318,11 @@ export default function ApplyPage() {
                 <Field label="Requested amount (Rs)">
                   <input
                     type="number"
+                    min={0}
                     className="qi font-mono"
                     value={form.requested_amount_pkr}
-                    onChange={(e) => set("requested_amount_pkr", Number(e.target.value))}
+                    onFocus={(e) => e.target.select()}
+                    onChange={(e) => set("requested_amount_pkr", Math.max(0, Number(e.target.value) || 0))}
                   />
                 </Field>
                 <Field label="Purpose">

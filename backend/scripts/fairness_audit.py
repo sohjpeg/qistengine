@@ -15,6 +15,7 @@ Writes docs/RESPONSIBLE_AI.md with the actual measured numbers.
 """
 from __future__ import annotations
 
+import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -32,6 +33,7 @@ from app.services.scorecard import pd_to_score, score_to_band  # noqa: E402
 
 PRED_CSV = BACKEND_ROOT / "data" / "processed" / "test_predictions.csv"
 DOC_PATH = REPO_ROOT / "docs" / "RESPONSIBLE_AI.md"
+SUMMARY_JSON = BACKEND_ROOT / "data" / "processed" / "fairness_summary.json"
 APPROVE_MIN_SCORE = 560  # score below this = VERY_HIGH band = decline
 FOUR_FIFTHS = 0.80
 
@@ -230,6 +232,43 @@ def main() -> None:
     )
     DOC_PATH.write_text("\n".join(parts), encoding="utf-8")
     print(f"\n[fairness] wrote {DOC_PATH}")
+
+    # Structured summary for the API / analytics model card.
+    summary = {
+        "generated_at": now,
+        "approve_min_score": APPROVE_MIN_SCORE,
+        "portfolio_approval_rate": round(overall_approval, 4),
+        "portfolio_false_positive_rate": round(overall_fpr, 4),
+        "four_fifths_pass": len(flagged) == 0,
+        "flagged_groups": [
+            {
+                "dimension": dim,
+                "group": str(r["group"]),
+                "approval_rate": float(r["approval_rate"]),
+                "approval_ratio_vs_best": float(r["approval_ratio_vs_best"]),
+                "observed_default_rate": float(r["observed_default_rate"]),
+            }
+            for dim, tbl in audited.items()
+            for _, r in tbl.iterrows()
+            if r["four_fifths_flag"]
+        ],
+        "groups": {
+            dim: [
+                {
+                    "group": str(r["group"]),
+                    "n": int(r["n"]),
+                    "approval_rate": float(r["approval_rate"]),
+                    "approval_ratio_vs_best": float(r["approval_ratio_vs_best"]),
+                    "observed_default_rate": float(r["observed_default_rate"]),
+                }
+                for _, r in tbl.iterrows()
+            ]
+            for dim, tbl in audited.items()
+        },
+    }
+    SUMMARY_JSON.parent.mkdir(parents=True, exist_ok=True)
+    SUMMARY_JSON.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    print(f"[fairness] wrote {SUMMARY_JSON}")
 
 
 if __name__ == "__main__":

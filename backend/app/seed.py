@@ -55,16 +55,23 @@ def _persist_scored(
     archetype: str,
     submitted_at: datetime,
     bill_fields: dict | None = None,
+    application_id: str | None = None,
+    bill_filename: str | None = None,
+    bill_extraction: str = "simulated",
+    bill_confidence: float = 0.0,
 ) -> tuple[Application, ScoreResult]:
     session.add(applicant)
     session.flush()
-    app_row = Application(
+    app_kwargs = dict(
         applicant_id=applicant.id,
         status="SCORED",
         requested_amount_pkr=requested,
         purpose=purpose,
         submitted_at=submitted_at,
     )
+    if application_id:
+        app_kwargs["id"] = application_id
+    app_row = Application(**app_kwargs)
     session.add(app_row)
     session.flush()
 
@@ -97,9 +104,9 @@ def _persist_scored(
             Document(
                 application_id=app_row.id,
                 doc_type="UTILITY_BILL",
-                filename=f"{applicant.city.lower()}_{archetype}_bill.pdf",
-                extraction_method="simulated",
-                confidence=0.0,
+                filename=bill_filename or f"{applicant.city.lower()}_{archetype}_bill.pdf",
+                extraction_method=bill_extraction,
+                confidence=bill_confidence,
                 extracted_json=bill_fields,
                 uploaded_at=submitted_at,
             )
@@ -195,6 +202,7 @@ def main() -> None:
                 has_fixed_premises=a["has_fixed_premises"],
                 created_at=now - timedelta(hours=i),
             )
+            prov = str(p["bill_fields"].get("provider", "disco")).lower().replace("-", "")
             app_row, sr = _persist_scored(
                 session,
                 applicant=applicant,
@@ -204,6 +212,12 @@ def main() -> None:
                 archetype=a["archetype"],
                 submitted_at=now - timedelta(hours=i),
                 bill_fields=p["bill_fields"],
+                # Stable id = the profile slug, so the queue links, the demo-script
+                # URLs (/dashboard/<slug>) and the offline demo cache all resolve.
+                application_id=p["id"],
+                bill_filename=f"{p['city'].lower()}_{prov}_bill.pdf",
+                bill_extraction="pdf_text",
+                bill_confidence=0.86,
             )
             # leave the six demo apps un-decided so the queue has live work
         session.commit()

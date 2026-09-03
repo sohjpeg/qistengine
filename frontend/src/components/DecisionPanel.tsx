@@ -123,8 +123,11 @@ export function DecisionPanel({
             Approved principal (Rs)
             <input
               type="number"
-              value={amount}
-              onChange={(e) => setAmount(Number(e.target.value))}
+              min={0}
+              value={amount === 0 ? "" : amount}
+              placeholder="0"
+              onFocus={(e) => e.target.select()}
+              onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
               className="mt-1 h-9 w-full rounded-sm border border-rule-strong bg-surface px-2 font-mono text-body tabular-nums"
             />
           </label>
@@ -132,8 +135,11 @@ export function DecisionPanel({
             Approved installment (Rs / month)
             <input
               type="number"
-              value={installment}
-              onChange={(e) => setInstallment(Number(e.target.value))}
+              min={0}
+              value={installment === 0 ? "" : installment}
+              placeholder="0"
+              onFocus={(e) => e.target.select()}
+              onChange={(e) => setInstallment(Math.max(0, Number(e.target.value) || 0))}
               className="mt-1 h-9 w-full rounded-sm border border-rule-strong bg-surface px-2 font-mono text-body tabular-nums"
             />
             {installment > limit.safe_installment_pkr ? (

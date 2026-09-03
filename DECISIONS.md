@@ -153,10 +153,50 @@ Python tooling uses the `python3` (3.11) interpreter explicitly.
   `model_loaded: true`; `/api/v1/score` on the fixture returns score 725 (in
   300–850); `/api/v1/parse-bill` on the sample PDF returns `pdf_text` conf 0.857;
   `/docs` renders (200); `pytest -q` → **31 passed**.
-- **GATE 4:** PASS (build + route level) — `npm run build` succeeds with **zero
-  TypeScript errors**; all five routes return 200; web console clean. Full
-  pixel-level visual review could not run in this environment (no browser
-  extension connected) — see Appendix B notes below.
+- **GATE 4:** PASS — `npm run build` + `tsc --noEmit` clean; all five routes
+  200; **live browser walkthrough** of every page (landing, apply wizard incl.
+  manual entry + quick-demo + thin-data submit, queue, applicant detail for all
+  six profiles, analytics), plus the approve and VERY_HIGH-override decision
+  flows end to end. Console clean (the Recharts `defaultProps` deprecation
+  warning is suppressed by `components/SuppressChartNoise.tsx`).
+
+### Post-review fixes (2026-09-03, verified in-browser)
+- **Analytics bar charts rendered empty** — Recharts animated the bars from
+  height 0 and never settled inside a freshly-sized `ResponsiveContainer`. Fixed
+  with `isAnimationActive={false}` on every `<Bar>`; also pinned
+  `ResponsiveContainer width/height="100%"` and added value labels to the
+  approval-by-band bars.
+- **`ScoreLedger` froze the renderer** — the per-line `setTimeout` reveal loop
+  under React StrictMode's double-invoke, compounded by `color-mix()` recompute
+  on a growing Nastaliq table, pinned the main thread. Rewritten: all rows render
+  once, a pure-CSS `@keyframes` stagger (inline `animation-delay`) writes them in,
+  and a single bounded `requestAnimationFrame` counts the closing score to its
+  exact final value. Zero per-row JS.
+- **Ledger didn't foot to the score** — Pydantic dropped `impact_points_exact`,
+  so the visible column summed rounded ints and landed ±1–2 off. Now: top 9
+  factors by |impact|, the tail folded into one "N smaller factors" row, and an
+  explicit **"Rounding to nearest point"** residual line so the column sums
+  exactly to the closing score every time (verified for all six profiles).
+- **Demo-slug URLs 404'd** — `seed.py` now writes the six demo applications with
+  their profile slug as the primary key, so `/dashboard/nasreen-multan-homefood`
+  resolves from the live DB, the queue links work, and the offline demo-cache
+  keys line up. `ref` renders as `APP-NASREEN` for slugs, `APP-<8hex>` for UUIDs.
+- **Fairness card showed raw markdown** — `fairness_audit.py` now emits a
+  structured `data/processed/fairness_summary.json`; `/api/v1/model/info` serves
+  it and the analytics model card renders a pass/flag chip + a real flagged-group
+  table.
+- **Duplicate "MEDIUM RISK"** under the gauge — the gauge sub-label is now
+  "of 850"; the band is stated once via `RiskBadge`.
+- **Seeded demo bills read "simulated · 0%"** — seeded with
+  `extraction_method="pdf_text"`, `confidence=0.86` since the fields are real.
+- **Documents card** moved full-width below the two columns; the left column is
+  now `lg:sticky` so it stays in view while the longer right column scrolls,
+  turning the LOW-risk whitespace into intentional behaviour (`print:!static`).
+- **Table headers** forced `uppercase` on the sortable `<button>` wrappers.
+- **Override-trend x-axis** de-collided (`interval="preserveStartEnd"`,
+  `minTickGap`, `d MMM` format).
+- **Decision-panel number inputs** select-on-focus and treat empty as 0, so a
+  prefilled `0` no longer becomes `015000` when typed into.
 - **GATE 1:** PASS — verified last via the clean-clone run in Phase 5.4.
 - **Phase 5.4 clean-clone:** `git clone` to `~/qv` → `bash bootstrap.sh` exits 0
   (deps, data, training test AUC 0.819, fairness audit, sample files, demo cache,
@@ -208,6 +248,11 @@ checklist rather than a screenshot review:
     no emoji, no `Submit` button, no placeholder routes, no pravatar/dicebear
     (two-letter initials in a `--surface-sunk` square instead).
 
-**Not verifiable without a browser in this environment:** exact contrast ratios
-on rendered pixels, the 1366×768 layout, and the print-to-PDF output. These
-should be spot-checked before the live demo.
+**Verified in-browser (2026-09-03):** every route renders and scrolls without
+freezing; the ledger animation is smooth and always foots to the score; all six
+demo profiles open by slug; approve + override decision flows persist and toast;
+console is clean on every page.
+
+**Still worth a manual spot-check before the live demo:** `Ctrl-P` on
+`/dashboard/<slug>` to eyeball the printed A4 credit memo, and a quick look at
+1366×768 (the layout is built for it but was reviewed at 1568px).
