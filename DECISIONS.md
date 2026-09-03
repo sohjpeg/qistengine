@@ -189,9 +189,11 @@ Python tooling uses the `python3` (3.11) interpreter explicitly.
   "of 850"; the band is stated once via `RiskBadge`.
 - **Seeded demo bills read "simulated · 0%"** — seeded with
   `extraction_method="pdf_text"`, `confidence=0.86` since the fields are real.
-- **Documents card** moved full-width below the two columns; the left column is
-  now `lg:sticky` so it stays in view while the longer right column scrolls,
-  turning the LOW-risk whitespace into intentional behaviour (`print:!static`).
+- **Documents card** moved full-width below the two columns. This alone balanced
+  the two columns (left: gauge / Qist / adverse / decision; right: radar / reason
+  codes / cashflow) to near-equal height, so the earlier left-column whitespace
+  is gone. (A `lg:sticky` left column was tried and reverted — it produced a
+  worse mid-scroll blank.)
 - **Table headers** forced `uppercase` on the sortable `<button>` wrappers.
 - **Override-trend x-axis** de-collided (`interval="preserveStartEnd"`,
   `minTickGap`, `d MMM` format).

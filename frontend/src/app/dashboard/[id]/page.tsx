@@ -158,8 +158,8 @@ export default function ApplicationDetailPage() {
           ) : null}
 
           <div className="mt-6 grid items-start gap-6 lg:grid-cols-12">
-            {/* left column — sticks in view while the longer right column scrolls */}
-            <div className="flex flex-col gap-6 lg:col-span-5 lg:sticky lg:top-4 print:!static">
+            {/* left column */}
+            <div className="flex flex-col gap-6 lg:col-span-5">
               <Card>
                 <CardBody className="flex flex-col items-center gap-2">
                   <ScoreGauge score={score.score} band={score.risk_band} size="lg" animate />
