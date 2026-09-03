@@ -169,6 +169,8 @@ export default function ApplyPage() {
           <li key={s} className="flex flex-1 items-center gap-2">
             <button
               onClick={() => i < step && setStep(i)}
+              aria-label={`Step ${i + 1}: ${s}${i < step ? " (completed, click to go back)" : i === step ? " (current)" : ""}`}
+              aria-current={i === step ? "step" : undefined}
               className={cn(
                 "grid h-6 w-6 shrink-0 place-items-center rounded-sm text-mono-sm",
                 i < step
