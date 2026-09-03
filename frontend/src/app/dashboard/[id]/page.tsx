@@ -12,6 +12,7 @@ import { ReasonCodeColumns } from "@/components/ReasonCodeList";
 import { RiskBadge } from "@/components/RiskBadge";
 import { ScoreGauge } from "@/components/ScoreGauge";
 import { ScoreLedger } from "@/components/ScoreLedger";
+import { SensitivityPanel } from "@/components/SensitivityPanel";
 import { BackendBanner } from "@/components/ui/BackendBanner";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Disclaimer } from "@/components/ui/Disclaimer";
@@ -230,6 +231,12 @@ export default function ApplicationDetailPage() {
               </Card>
             </div>
           </div>
+
+          {score.features_used && Object.keys(score.features_used).length === 26 ? (
+            <div className="mt-6">
+              <SensitivityPanel baseline={score} />
+            </div>
+          ) : null}
 
           <Card className="mt-6 no-print">
             <CardHeader>

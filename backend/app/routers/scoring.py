@@ -22,7 +22,8 @@ def score(req: ScoreRequest) -> ScoreResponse:
         )
     except RuntimeError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
-    result.pop("_features_used", None)
+    result["features_used"] = result.pop("_features_used", {})
+    result["archetype_hint"] = req.archetype_hint
     return ScoreResponse(**result)
 
 

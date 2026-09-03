@@ -20,6 +20,7 @@ from app.schemas import (
     PaginatedApplications,
     ScoreResponse,
 )
+from app.services.feature_engineering import FEATURE_ORDER
 from app.services.pipeline import merge_raw_signals, run_scoring
 from app.services.scorecard import score_to_band
 
@@ -40,7 +41,12 @@ def mask_phone(phone: str) -> str:
     return "**********"
 
 
-def _score_payload_from_row(sr: ScoreResult) -> ScoreResponse:
+def _score_payload_from_row(sr: ScoreResult, archetype: str | None = None) -> ScoreResponse:
+    features_used = {
+        k: float(v)
+        for k, v in (sr.features_json or {}).items()
+        if k in FEATURE_ORDER and isinstance(v, (int, float))
+    }
     return ScoreResponse(
         application_id=sr.application_id,
         score=sr.score,
@@ -57,6 +63,8 @@ def _score_payload_from_row(sr: ScoreResult) -> ScoreResponse:
         portfolio_median_metrics=sr.features_json.get("_portfolio_median", sr.behavioral_metrics_json),
         monthly_series=sr.monthly_series_json,
         data_gaps=sr.data_gaps_json,
+        features_used=features_used,
+        archetype_hint=archetype,
         model_version=sr.model_version,
         scored_at=sr.scored_at.strftime("%Y-%m-%dT%H:%M:%SZ"),
     )
@@ -243,7 +251,7 @@ def _detail(application_id: str, session: Session) -> ApplicationDetail:
         decided_by=app_row.decided_by,
         applicant=ApplicantOut(**appl.model_dump()),
         documents=[DocumentOut(**d.model_dump()) for d in docs],
-        score_result=_score_payload_from_row(sr) if sr else None,
+        score_result=_score_payload_from_row(sr, appl.archetype if appl else None) if sr else None,
         decision=DecisionOut(**dec.model_dump()) if dec else None,
     )
 

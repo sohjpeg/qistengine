@@ -53,6 +53,10 @@ bill and a transaction log.
    *exactly* (`points = −factor · shap`), rendered as a khata ledger that sums to
    the score. A safe Qist installment is derived from disposable income through a
    transparent haircut waterfall. Non-approvals carry adverse-action codes.
+5. **Stress-test.** A **what-if panel** lets the officer drag four levers
+   (income, utility discipline, volatility, expense burden) and watch the score,
+   band, probability of default and Qist offer re-compute live — the model is
+   examinable, not a black box.
 
 ```
  QIST SCORECARD LEDGER                      APP-4417 · 27 Aug 2026

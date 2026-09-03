@@ -67,6 +67,29 @@ def test_score_endpoint_returns_valid_contract(client):
     # ledger additivity
     total = body["base_contribution"] + sum(c["impact_points"] for c in body["ledger_lines"])
     assert abs(total - body["score"]) <= 3  # integer points, so allow rounding slack
+    # what-if support: the full 26-feature vector is echoed back
+    assert len(body["features_used"]) == 26
+
+
+def test_what_if_rescore_reacts_to_a_lever(client):
+    """Powers the SensitivityPanel: re-scoring with a worse utility ratio drops
+    the score, and a bigger disposable income raises the safe installment."""
+    payload = json.loads(FIXTURE.read_text())
+    base = client.post("/api/v1/score", json=payload).json()
+    feats = dict(base["features_used"])
+
+    worse = {**feats, "utility_on_time_ratio": 0.15, "utility_avg_days_late": 40}
+    r_worse = client.post(
+        "/api/v1/score", json={"features": worse, "archetype_hint": "kiryana_merchant"}
+    ).json()
+    assert r_worse["score"] < base["score"]
+
+    richer = {**feats, "monthly_inflow_pkr": feats["monthly_inflow_pkr"] * 1.6}
+    r_rich = client.post(
+        "/api/v1/score", json={"features": richer, "archetype_hint": "kiryana_merchant"}
+    ).json()
+    if base["qist_limit"]["eligible"] and r_rich["qist_limit"]["eligible"]:
+        assert r_rich["qist_limit"]["safe_installment_pkr"] >= base["qist_limit"]["safe_installment_pkr"]
 
 
 def test_score_with_partial_data_populates_data_gaps(client):

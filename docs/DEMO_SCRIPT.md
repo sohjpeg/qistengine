@@ -56,6 +56,15 @@ Scroll to the **Score ledger** — the khata page.
 Point at the adverse-action notice: *"regulators require this in real lending —
 the top three negative drivers as short codes."*
 
+Then scroll to **What-if analysis** and drag the *utility bills paid on time*
+slider down: *"the model re-scores live — this isn't a static report, the officer
+can test a scenario."* Bilal drops from HIGH to VERY_HIGH and the Qist offer
+disappears. Drag *monthly income* up instead: *"the risk score barely moves —
+his structural problems are concentration and a thin buffer, not income — but the
+affordable installment jumps, because there's more disposable income to lend
+against."* That contrast is the point: score and affordability are different
+questions.
+
 ## 3:30–4:15 — Underwriter view
 
 Back to `/dashboard`. The six demo profiles sit at the top of the queue, each at

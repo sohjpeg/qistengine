@@ -131,6 +131,8 @@ class ScoreResponse(BaseModel):
     portfolio_median_metrics: BehavioralMetrics
     monthly_series: list[MonthlyPoint]
     data_gaps: list[DataGap]
+    features_used: dict[str, float] = Field(default_factory=dict)
+    archetype_hint: str | None = None
     model_version: str
     scored_at: str
     disclaimer: str = DISCLAIMER

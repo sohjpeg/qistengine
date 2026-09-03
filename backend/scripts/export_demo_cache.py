@@ -35,7 +35,8 @@ def main() -> None:
     bundles = []
     for p in MOCK_PROFILES:
         result = run_scoring(dict(p["features"]), applicant_id=p["id"], archetype_hint=p["archetype"])
-        result.pop("_features_used", None)
+        result["features_used"] = result.pop("_features_used", {})
+        result["archetype_hint"] = p["archetype"]
         bundles.append({"profile": {k: p[k] for k in _PROFILE_KEYS}, "score": result})
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(bundles, indent=1), encoding="utf-8")

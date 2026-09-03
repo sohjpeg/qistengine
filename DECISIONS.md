@@ -250,9 +250,33 @@ checklist rather than a screenshot review:
     no emoji, no `Submit` button, no placeholder routes, no pravatar/dicebear
     (two-letter initials in a `--surface-sunk` square instead).
 
+### What-if / sensitivity panel (added 2026-09-03)
+The one feature added after the review. The synthetic-data question is answered
+by honesty + the data-access roadmap, not by more code; the real demo risk is the
+model reading as an unexaminable black box. The panel kills that:
+- Full-width card on `/dashboard/[id]`, below the two columns. Four sliders —
+  monthly income, utility-on-time %, income volatility %, expense burden % —
+  mapped onto model features. On change (debounced 320 ms) it calls the existing
+  `POST /api/v1/score` with the modified 26-vector and shows the new score /
+  band / PD / Qist installment with a signed delta vs the saved score.
+- Backend change is minimal: `ScoreResponse` now echoes `features_used` (the full
+  26-vector) and `archetype_hint`, so the panel can seed the sliders and re-score
+  with the right archetype. `net_cashflow_ratio` is kept consistent with the
+  income lever client-side.
+- Self-contained: no model or data changes, results are never persisted
+  ("Hypothetical — not saved to the application"), and it degrades to a "start
+  the backend" message if `/score` is unreachable. `no-print`.
+- The teaching moment for the demo: on Bilal, dropping utility discipline flips
+  HIGH → VERY_HIGH and kills the offer; raising income barely moves the *score*
+  (his risk is concentration + thin buffer) but sharply raises the *safe
+  installment*. Score and affordability are different questions — the panel makes
+  that legible.
+- `test_api.py::test_what_if_rescore_reacts_to_a_lever` covers it (32 tests total).
+
 **Verified in-browser (2026-09-03):** every route renders and scrolls without
 freezing; the ledger animation is smooth and always foots to the score; all six
 demo profiles open by slug; approve + override decision flows persist and toast;
+the what-if sliders re-score live with correct deltas and a working reset;
 console is clean on every page.
 
 **Still worth a manual spot-check before the live demo:** `Ctrl-P` on

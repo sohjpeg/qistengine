@@ -79,6 +79,8 @@ export interface ScoreResponse {
   portfolio_median_metrics: BehavioralMetrics;
   monthly_series: MonthlyPoint[];
   data_gaps: DataGap[];
+  features_used: Record<string, number>;
+  archetype_hint: string | null;
   model_version: string;
   scored_at: string;
   disclaimer: string;
