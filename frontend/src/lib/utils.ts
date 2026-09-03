@@ -1,5 +1,32 @@
 import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { extendTailwindMerge } from "tailwind-merge";
+
+// The project's font-size scale (tailwind.config.ts) uses named tokens like
+// `text-body` / `text-h1` instead of t-shirt sizes. Without this, tailwind-merge
+// can't tell them apart from text-color utilities (`text-white`, `text-ink`, ...)
+// and silently drops whichever one comes second — see Button.tsx primary variant.
+const twMerge = extendTailwindMerge({
+  extend: {
+    classGroups: {
+      "font-size": [
+        {
+          text: [
+            "score-hero",
+            "display",
+            "h1",
+            "h2",
+            "body",
+            "body-strong",
+            "figure",
+            "label",
+            "caption",
+            "mono-sm",
+          ],
+        },
+      ],
+    },
+  },
+});
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
