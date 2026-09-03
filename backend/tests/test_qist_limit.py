@@ -57,6 +57,13 @@ def test_volatility_haircut_clamped():
     assert wild == 0.45
 
 
+def test_depth_confidence_clamped():
+    thin = compute_qist_limit(dict(BASE, utility_months_observed=0), "LOW")["breakdown"]["depth_confidence"]
+    long = compute_qist_limit(dict(BASE, utility_months_observed=24), "LOW")["breakdown"]["depth_confidence"]
+    assert thin == 0.5
+    assert long == 1.0
+
+
 def test_tenor_override_only_accepts_valid_values():
     r = compute_qist_limit(BASE, "LOW", tenor_override=6)
     assert r["tenor_months"] == 6
