@@ -162,6 +162,7 @@ def list_applications(
     status: str | None = None,
     risk_band: str | None = None,
     city: str | None = None,
+    archetype: str | None = None,
     sort: Literal["score", "date"] = "date",
     order: Literal["asc", "desc"] = "desc",
     page: int = Query(1, ge=1),
@@ -175,6 +176,8 @@ def list_applications(
         stmt = stmt.where(Application.status == status)
     if city:
         stmt = stmt.where(Applicant.city == city)
+    if archetype:
+        stmt = stmt.where(Applicant.archetype == archetype)
     if risk_band:
         stmt = stmt.where(ScoreResult.risk_band == risk_band)
 
