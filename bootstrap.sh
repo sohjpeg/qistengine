@@ -81,8 +81,22 @@ step "Seeding the demo database"
 ( cd "$ROOT/backend" && "$VENV_PY" -m app.seed )
 
 # --- frontend ---
-step "Frontend dependencies (npm install — first time is slow)"
-( cd "$ROOT/frontend" && npm install --silent --no-audit --no-fund )
+step "Frontend dependencies (first time is slow)"
+# npm ci does a clean, lockfile-exact install — it wipes any partial node_modules
+# left by an interrupted run and is more reproducible than 'npm install'.
+if [ -f "$ROOT/frontend/package-lock.json" ]; then
+  ( cd "$ROOT/frontend" && npm ci --no-audit --no-fund ) || {
+    printf "${YELLOW}  npm ci failed — retrying with a clean npm install…${NC}\n"
+    ( cd "$ROOT/frontend" && rm -rf node_modules && npm install --no-audit --no-fund )
+  }
+else
+  ( cd "$ROOT/frontend" && npm install --no-audit --no-fund )
+fi
+# sanity-check the install actually landed
+if [ ! -f "$ROOT/frontend/node_modules/next/dist/server/require-hook.js" ]; then
+  printf "${RED}Frontend install looks incomplete.${NC} Run: (cd frontend && rm -rf node_modules && npm install)\n"
+  exit 1
+fi
 ok "npm packages installed"
 
 # --- done ---
