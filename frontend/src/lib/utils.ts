@@ -1,5 +1,32 @@
 import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { extendTailwindMerge } from "tailwind-merge";
+
+// The design system replaces Tailwind's default type scale and colour palette
+// with custom tokens. tailwind-merge must be told which custom `text-*` names are
+// font-sizes and which are colours, or it treats e.g. `text-body` as a colour and
+// silently drops `text-white` from `bg-brand text-white ... text-body`.
+const FONT_SIZES = [
+  "score-hero", "display", "h1", "h2", "body", "body-strong", "figure", "label",
+  "caption", "mono-sm",
+];
+const COLORS = [
+  "paper", "surface", "surface-sunk", "rule", "rule-strong", "ink", "ink-muted",
+  "ink-faint", "brand", "brand-hover", "brand-tint", "band-low", "band-low-tint",
+  "band-medium", "band-medium-tint", "band-high", "band-high-tint",
+  "band-very-high", "band-very-high-tint", "ledger-credit", "ledger-debit",
+  "ledger-rule", "focus",
+];
+
+const twMerge = extendTailwindMerge({
+  extend: {
+    classGroups: {
+      "font-size": [{ text: FONT_SIZES }],
+      "text-color": [{ text: COLORS }],
+      "bg-color": [{ bg: COLORS }],
+      "border-color": [{ border: COLORS }],
+    },
+  },
+});
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
