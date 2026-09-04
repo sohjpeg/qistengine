@@ -117,11 +117,16 @@ bill and a transaction log.
 
 ## How it works
 
-1. **Ingest.** `parse-bill` reads a utility bill (pdfplumber text layer →
-   Tesseract → deterministic simulated fallback, always labelled). `parse-transactions`
-   normalises any wallet export — JazzCash, EasyPaisa, SadaPay, NayaPay, or a
-   hand-kept Digital Khata ledger — with a tolerant column map and an
-   Urdu-and-English keyword classifier.
+1. **Ingest.** `parse-bill` reads a utility bill — pdfplumber text layer →
+   Tesseract for scans → a deterministic, clearly-labelled simulated fallback;
+   detects the DISCO/gas provider and pulls consumer number, billing month,
+   units, charges, arrears, due date and payment date by tolerant regex.
+   `parse-transactions` accepts **CSV, JSON or PDF** wallet statements
+   (JazzCash, EasyPaisa, SadaPay, NayaPay, Raast, a bank export, or a hand-kept
+   Digital Khata) — auto-detects the header row past marketing preamble, handles
+   split debit/credit columns, `Rs`/comma/`(parentheses)` amounts and `Cr`/`Dr`
+   suffixes, and classifies every row with an Urdu-and-English keyword map. It
+   raises a clear error rather than guessing when a file genuinely can't be read.
 2. **Feature engineering.** 26 frozen features across utility discipline,
    cashflow health, transaction behaviour and stability. Partial data is imputed
    at population medians and reported in a `data_gaps` array — scoring never

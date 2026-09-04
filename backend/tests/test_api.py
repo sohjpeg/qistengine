@@ -226,3 +226,42 @@ def test_parse_bill_fallback_is_labelled(client):
     body = r.json()
     assert body["extraction_method"] == "simulated"
     assert body["confidence"] == 0.0
+
+
+def test_parse_transactions_messy_real_world_csv(client):
+    """Preamble/marketing rows, split Debit/Credit columns, Rs + commas,
+    a footer total — a shape a real JazzCash/EasyPaisa CSV export takes."""
+    csv = (
+        "JazzCash Mobile Account\n"
+        "Statement for 03xx-xxxxxxx\n"
+        "Period: 01 Jun 2026 to 30 Jun 2026\n"
+        "\n"
+        "Trans Date,Transaction Details,Debit,Credit,Balance\n"
+        '02/06/2026,QR Payment received - Customer,,"Rs 2,500","Rs 6,700"\n'
+        '04/06/2026,K-Electric bill payment,"Rs 3,100",,"Rs 3,600"\n'
+        "09/06/2026,Mobile Load Jazz,Rs 300,,\"Rs 3,300\"\n"
+        '15/06/2026,Committee BC contribution,"Rs 2,000",,"Rs 1,300"\n'
+        '28/06/2026,Cash In from shop sale,,"Rs 4,000","Rs 4,300"\n'
+        'Closing Balance,,,,"Rs 4,300"\n'
+    )
+    r = client.post(
+        "/api/v1/parse-transactions",
+        files={"file": ("statement.csv", csv, "text/csv")},
+    )
+    assert r.status_code == 200, r.text
+    body = r.json()
+    assert body["row_count"] == 5  # footer row skipped
+    cats = {t["category"] for t in body["transactions"]}
+    assert "OUTFLOW_UTILITY" in cats
+    assert "COMMITTEE" in cats
+    assert "INFLOW_MERCHANT" in cats
+    assert body["derived_features"]["committee_participation"] == 1.0
+
+
+def test_parse_transactions_rejects_a_file_it_cannot_read(client):
+    r = client.post(
+        "/api/v1/parse-transactions",
+        files={"file": ("notes.csv", "just some prose, no columns here at all\nsecond line\n", "text/csv")},
+    )
+    assert r.status_code == 422
+    assert "column" in r.json()["detail"].lower()

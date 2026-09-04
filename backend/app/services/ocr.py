@@ -22,19 +22,23 @@ from dateutil import parser as dateparser
 from app.config import settings
 
 PATTERNS: dict[str, str] = {
-    "consumer_number": r"(?:Consumer|Ref(?:erence)?)\s*(?:No\.?|Number|#)\s*[:\-]?\s*([0-9\-\s]{8,20})",
-    "billing_month": r"(?:Bill(?:ing)?\s*Month|Month)\s*[:\-]?\s*([A-Za-z]{3,9}[\s\-]?\d{2,4})",
-    "units_consumed": r"(?:Units\s*(?:Consumed)?|Consumption)\s*[:\-]?\s*([\d,]+)",
-    "current_charges": r"(?:Current\s*(?:Bill|Charges)|Payable\s*Within\s*Due\s*Date)\s*[:\-]?\s*(?:Rs\.?)?\s*([\d,]+)",
-    "arrears": r"(?:Arrears|Previous\s*Balance|Outstanding)\s*[:\-]?\s*(?:Rs\.?)?\s*([\d,]+)",
-    "due_date": r"(?:Due\s*Date)\s*[:\-]?\s*(\d{1,2}[\-/\s][A-Za-z0-9]{2,9}[\-/\s]\d{2,4})",
-    "payment_date": r"(?:Paid\s*(?:On|Date)|Payment\s*Date)\s*[:\-]?\s*(\d{1,2}[\-/\s][A-Za-z0-9]{2,9}[\-/\s]\d{2,4})",
+    "consumer_number": r"(?:Consumer|Ref(?:erence)?|Account|A/?C|Customer|Meter)\s*(?:No\.?|Number|ID|#)?\s*[:\-]?\s*([0-9][0-9\-\s]{7,22}[0-9])",
+    "billing_month": r"(?:Bill(?:ing)?\s*(?:Month|Period)|Month|For\s*the\s*Month\s*of|Reading\s*Month)\s*[:\-]?\s*([A-Za-z]{3,9}[\s\-,]{0,2}\d{2,4})",
+    "units_consumed": r"(?:Units\s*(?:Consumed|Billed)?|Consumption|kWh\s*Consumed|Total\s*Units)\s*[:\-]?\s*([\d,]+)",
+    "current_charges": r"(?:Current\s*(?:Bill|Charges|Month\s*Bill)|Bill\s*Amount|Net\s*Amount|Payable\s*Within\s*Due\s*Date|Amount\s*Payable|Current\s*Payable)\s*[:\-]?\s*(?:Rs\.?|PKR)?\s*([\d,]+(?:\.\d{1,2})?)",
+    "arrears": r"(?:Arrears|Previous\s*(?:Balance|Bill|Reading)|Outstanding|Unpaid\s*Amount|Late\s*Payment)\s*[:\-]?\s*(?:Rs\.?|PKR)?\s*(-?[\d,]+(?:\.\d{1,2})?)",
+    "due_date": r"(?:Due\s*Date|Last\s*Date\s*(?:of\s*Payment)?|Payment\s*Due(?:\s*Date)?)\s*[:\-]?\s*(\d{1,2}[\-/\s.][A-Za-z0-9]{2,9}[\-/\s.]\d{2,4})",
+    "payment_date": r"(?:Paid\s*(?:On|Date)?|Payment\s*(?:Date|Received)|Date\s*Paid|Received\s*On)\s*[:\-]?\s*(\d{1,2}[\-/\s.][A-Za-z0-9]{2,9}[\-/\s.]\d{2,4})",
 }
 
 _NUMERIC_FIELDS = {"units_consumed", "current_charges", "arrears"}
 _DATE_FIELDS = {"due_date", "payment_date"}
 
-_PROVIDERS = ["K-Electric", "LESCO", "FESCO", "IESCO", "MEPCO", "PESCO", "QESCO", "HESCO", "GEPCO"]
+# DISCOs, KE, and the gas utilities. Matched case-insensitively against the text.
+_PROVIDERS = [
+    "K-Electric", "KE", "LESCO", "FESCO", "IESCO", "MEPCO", "PESCO", "QESCO",
+    "HESCO", "SEPCO", "TESCO", "GEPCO", "SSGC", "SNGPL", "KWSB", "WASA", "PTCL",
+]
 
 
 def _tesseract_available() -> bool:
@@ -68,9 +72,20 @@ def _ocr_image(data: bytes) -> str:
     return pytesseract.image_to_string(img, config="--psm 6")
 
 
+def _detect_provider(text: str) -> str | None:
+    for p in _PROVIDERS:
+        if re.search(r"\b" + re.escape(p).replace(r"\-", r"[-\s]?") + r"\b", text, re.IGNORECASE):
+            return "K-Electric" if p.upper() in {"KE", "K-ELECTRIC"} else p
+    return None
+
+
 def _parse_fields(text: str) -> tuple[dict[str, Any], dict[str, float]]:
     fields: dict[str, Any] = {}
     confidences: dict[str, float] = {}
+    prov = _detect_provider(text)
+    if prov:
+        fields["provider"] = prov
+        confidences["provider"] = 0.9
     for name, pat in PATTERNS.items():
         m = re.search(pat, text, re.IGNORECASE)
         if not m:
@@ -180,7 +195,9 @@ def parse_bill(filename: str, data: bytes) -> dict[str, Any]:
         fields, confidences = _simulate(filename, size)
     else:
         fields, confidences = _parse_fields(text)
-        if all(v is None for k, v in fields.items()):
+        # fall back if nothing meaningful landed (provider alone is not enough)
+        core = {k: v for k, v in fields.items() if k != "provider"}
+        if all(v is None for v in core.values()):
             method = "simulated"
             fields, confidences = _simulate(filename, size)
 

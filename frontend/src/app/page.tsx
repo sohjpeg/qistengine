@@ -7,7 +7,7 @@ const STEPS = [
   {
     icon: FileText,
     title: "Ingest",
-    body: "One electricity bill and one wallet transaction log. OCR reads the bill; the parser normalises any wallet export — JazzCash, EasyPaisa, a hand-kept Digital Khata.",
+    body: "A utility bill and a wallet statement — PDF or CSV. pdfplumber reads the bill's text layer (Tesseract for scans); the statement parser handles JazzCash, EasyPaisa or a hand-kept Digital Khata — tolerant of preamble rows, split debit/credit columns, and Rs/comma formatting, with Urdu-and-English transaction classification. Unreadable input falls back to a clearly-labelled simulated extraction.",
   },
   {
     icon: Gauge,
