@@ -1,7 +1,23 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, FileText, Gauge, Stamp } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Disclaimer } from "@/components/ui/Disclaimer";
+
+const CREATORS = [
+  {
+    name: "Sohaib Amir Bukhari",
+    role: "BS Computer Science · NUST",
+    photo: "/team/sohaib.jpg",
+    linkedin: "https://www.linkedin.com/in/sohaib-amir-7a89161a6/",
+  },
+  {
+    name: "Asma Imran",
+    role: "BS Computer Science · NUST",
+    photo: "/team/asma.jpg",
+    linkedin: "https://www.linkedin.com/in/asmaimran/",
+  },
+];
 
 const STEPS = [
   {
@@ -107,6 +123,43 @@ export default function LandingPage() {
             <p className="mt-1 text-body text-ink-muted">{s.body}</p>
           </div>
         ))}
+      </div>
+
+      {/* Creators */}
+      <div className="mt-10 rounded-md border border-rule bg-surface">
+        <div className="border-b border-rule px-5 py-3">
+          <p className="text-h2 text-ink">Built by</p>
+          <p className="text-caption text-ink-faint">
+            A two-person team, National University of Sciences &amp; Technology (NUST), Islamabad.
+          </p>
+        </div>
+        <ul className="grid gap-px bg-rule sm:grid-cols-2">
+          {CREATORS.map((c) => (
+            <li key={c.name} className="flex items-center gap-4 bg-surface p-5">
+              <span className="block h-14 w-14 shrink-0 overflow-hidden rounded-full border border-rule">
+                <Image
+                  src={c.photo}
+                  alt={c.name}
+                  width={56}
+                  height={56}
+                  className="h-full w-full object-cover"
+                />
+              </span>
+              <div className="min-w-0">
+                <p className="text-body-strong text-ink">{c.name}</p>
+                <p className="text-caption text-ink-muted">{c.role}</p>
+                <a
+                  href={c.linkedin}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-0.5 inline-flex items-center gap-1 text-caption text-brand hover:underline"
+                >
+                  LinkedIn <ArrowRight size={11} />
+                </a>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <Disclaimer className="mt-8" />

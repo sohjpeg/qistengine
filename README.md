@@ -9,8 +9,26 @@ and a safe monthly installment ("Qist") offer.
 > decision.** Fairness by construction: gender, religion, ethnicity, caste and
 > marital status are never model features.
 
-**Built by Sohaib Amir Bukhari and Asma Imran.**
 📄 [Project summary](docs/PROJECT_SUMMARY.md) · 🖥 [Presentation (PDF)](docs/deck/QistEngine-Presentation.pdf)
+
+### Built by
+
+<table>
+<tr>
+<td align="center" width="200">
+<img src="docs/team/sohaib.jpg" width="96" height="96" style="border-radius:50%" alt="Sohaib Amir Bukhari" /><br />
+<b>Sohaib Amir Bukhari</b><br />
+<sub>BS Computer Science · NUST</sub><br />
+<a href="https://www.linkedin.com/in/sohaib-amir-7a89161a6/">LinkedIn</a>
+</td>
+<td align="center" width="200">
+<img src="docs/team/asma.jpg" width="96" height="96" style="border-radius:50%" alt="Asma Imran" /><br />
+<b>Asma Imran</b><br />
+<sub>BS Computer Science · NUST</sub><br />
+<a href="https://www.linkedin.com/in/asmaimran/">LinkedIn</a>
+</td>
+</tr>
+</table>
 
 ---
 

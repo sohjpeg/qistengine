@@ -40,6 +40,7 @@ const config: Config = {
       sm: "var(--r-sm)",
       md: "var(--r-md)",
       lg: "var(--r-lg)",
+      full: "9999px",
     },
     boxShadow: {
       none: "none",
