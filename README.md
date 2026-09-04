@@ -47,6 +47,48 @@ numpy, etc.).
 
 ---
 
+## For reviewers — a 90-second tour
+
+The landing page has a **"Try it in three steps"** box; this is the same path.
+
+1. **`/apply`** → click a **Quick Demo** profile (try **Bilal**). It fills the
+   three-step form. Hit **Submit application**.
+2. You land on **`/dashboard/<applicant>`**. Top to bottom:
+   - **Score ledger** — the decision as a shopkeeper's *khata* book. Opening
+     balance, each factor as a credit/debit, closing score. It **foots exactly** —
+     you can add the column up.
+   - **Score gauge + risk band** — 300–850. LOW auto-approves, MEDIUM → manual
+     review, HIGH → guarantor, VERY_HIGH → decline.
+   - **Safe Qist limit** — the affordable monthly installment, with a waterfall
+     showing disposable income haircut down to the offer. Change the tenor
+     (3/6/9/12) — principal recomputes with no network call.
+   - **Behavioural radar** — six axes vs the portfolio median.
+   - **Reason codes**, **adverse-action notice**, **cashflow chart**, **documents**.
+   - **What-if analysis** (bottom) — drag a slider, the model re-scores live.
+     Try dropping *utility bills paid on time* on Bilal → HIGH flips to VERY_HIGH.
+3. **`/dashboard`** → the queue. **`/analytics`** → the model card (AUC, KS,
+   Gini, Brier) and the **fairness audit**, which flags the model's own disparate
+   impact by livelihood.
+
+Each applicant page has a **"How to read this page"** panel that expands the
+above inline. `Ctrl-P` on an applicant page prints a one-page A4 credit memo.
+
+### Glossary
+
+| Term | Meaning |
+|------|---------|
+| **PD** | Probability of default — the calibrated chance of missed repayment (a real frequency, isotonic-calibrated). |
+| **Risk band** | LOW 720–850 · MEDIUM 640–719 · HIGH 560–639 · VERY_HIGH 300–559. |
+| **Qist** | Urdu for "installment" — the product's primary output is the affordable monthly payment; principal follows. |
+| **DSR cap** | Debt-service ratio cap — the max share of disposable income the installment may consume (0.35 LOW → 0.10 VERY_HIGH). |
+| **Committee / BC** | ROSCA (rotating savings club) — regular contributions in the ledger signal savings discipline. |
+| **HHI** | Herfindahl index over transfer counterparties — high = money cycled between a few accounts (a gaming signal). |
+| **Four-fifths rule** | A group is flagged if its approval rate falls below 0.80 of the best group's. |
+| **Adverse-action code** | Short code for a top negative driver — required on non-approvals in real lending. |
+| **Load-shedding flag** | Months of abnormally low electricity use from grid outages — encoded separately and **excluded** from features. |
+
+---
+
 ```
 ┌───────── Applicant portal ─────────┐   ┌──────── Underwriting console ────────┐
 │  upload bill + wallet log          │   │  queue · KPIs · filters             │

@@ -82,10 +82,14 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <div className="mb-5 flex items-baseline justify-between">
+      <div className="mb-1 flex items-baseline justify-between">
         <h1 className="text-h1 text-ink">Underwriting queue</h1>
         <span className="text-mono-sm text-ink-faint">{rows?.length ?? 0} applications</span>
       </div>
+      <p className="mb-5 text-caption text-ink-faint">
+        Click any row to open the applicant. The top six are the demo profiles — start with one of
+        those.
+      </p>
 
       {offline && <BackendBanner demoActive={DEMO_MODE} />}
 

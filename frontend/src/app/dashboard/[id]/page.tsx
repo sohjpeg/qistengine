@@ -13,6 +13,7 @@ import { RiskBadge } from "@/components/RiskBadge";
 import { ScoreGauge } from "@/components/ScoreGauge";
 import { ScoreLedger } from "@/components/ScoreLedger";
 import { SensitivityPanel } from "@/components/SensitivityPanel";
+import { HowToRead } from "@/components/HowToRead";
 import { BackendBanner } from "@/components/ui/BackendBanner";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Disclaimer } from "@/components/ui/Disclaimer";
@@ -149,6 +150,7 @@ export default function ApplicationDetailPage() {
         </Card>
       ) : (
         <>
+          <HowToRead />
           <ScoreLedger score={score} applicationRef={ref} />
 
           {score.data_gaps.length ? (
