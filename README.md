@@ -9,6 +9,44 @@ and a safe monthly installment ("Qist") offer.
 > decision.** Fairness by construction: gender, religion, ethnicity, caste and
 > marital status are never model features.
 
+---
+
+## ▶ Run it (two commands)
+
+**Needs:** Python 3.10–3.12 (not 3.13), Node 20 LTS, and `bash`
+(macOS/Linux have it; on Windows use **WSL2** or **Git Bash**).
+
+```bash
+git clone https://github.com/sohjpeg/qistengine.git
+cd qistengine
+bash run-dev.sh
+```
+
+`run-dev.sh` sets everything up on the first run (~4 min: Python venv, synthetic
+data, model training, npm install) and then starts both servers. When you see
+**`QistEngine is running`**, open:
+
+### → http://localhost:3000
+
+Click a **Quick Demo** profile on the applicant portal, submit, and you land on
+the scored applicant page. `Ctrl-C` in the terminal stops everything. After the
+first run it's offline — no internet needed.
+
+<details><summary>Prefer to do it in steps, or hit an error?</summary>
+
+```bash
+bash bootstrap.sh    # one-time setup only
+bash run-dev.sh       # start the app
+```
+
+See **Troubleshooting** near the bottom (ports in use, wrong Python, Tesseract,
+numpy, etc.).
+</details>
+
+![QistEngine — the score ledger and what-if panel](docs/screenshots/detail.png)
+
+---
+
 ```
 ┌───────── Applicant portal ─────────┐   ┌──────── Underwriting console ────────┐
 │  upload bill + wallet log          │   │  queue · KPIs · filters             │
@@ -58,47 +96,30 @@ bill and a transaction log.
    band, probability of default and Qist offer re-compute live — the model is
    examinable, not a black box.
 
-```
- QIST SCORECARD LEDGER                      APP-4417 · 27 Aug 2026
- ────────────────────────────────────────┬─────────┬─────────
- DESCRIPTION                             │  CREDIT │   DEBIT
- ════════════════════════════════════════╪═════════╪═════════
- Opening balance (population base)       │     602 │
- Paid 11 of 12 electricity bills on time │     +45 │
- Steady month-to-month cash flow         │     +22 │
- Committee (BC) contributions detected   │     +11 │
- Wallet balance near zero 9 days a month │         │     −30
- Expenses consume 81% of monthly income  │         │     −18
- ════════════════════════════════════════╪═════════╪═════════
- CLOSING SCORE                           │     632 │
- ─────────────────────────────────────────┴─────────┴────────
-```
+The ledger genuinely foots to the score — SHAP values are additive in log-odds
+and the score is affine in log-odds, so `sum(points) + base = score` exactly.
+
+| Underwriting queue | Portfolio analytics |
+|---|---|
+| ![queue](docs/screenshots/queue.png) | ![analytics](docs/screenshots/analytics.png) |
+| **Applicant portal** | **What-if analysis** (bottom of the detail page) |
+| ![apply](docs/screenshots/apply.png) | see the full detail page → [`detail-full.png`](docs/screenshots/detail-full.png) |
 
 ---
 
-## Quickstart
+## Setup notes
 
-Requires **Python 3.10–3.12** (not 3.13 — LightGBM/SHAP wheels lag) and
-**Node 20 LTS** with npm 10.
+- **`bash run-dev.sh` is all you need.** It runs `bootstrap.sh` itself the first
+  time. After that, `run-dev.sh` just starts the two servers.
+- The app is **fully offline after the first run** — no CDN, no remote datasets,
+  no LLM calls. Fonts and demo data are bundled.
+- **Windows:** use **WSL2** or **Git Bash** (ships with Git for Windows). Clone to
+  a short path like `~/qistengine` — a very deep path can trip Windows' 260-char
+  limit on the LightGBM DLL.
+- **Determinism:** every RNG is seeded with 42. Two training runs produce
+  byte-identical metrics.
 
-```bash
-git clone <repo> && cd qistengine
-bash bootstrap.sh          # ~4 min: venv, deps, synthetic data, training, seed, npm install
-bash run-dev.sh            # starts FastAPI :8000 and Next.js :3000 together; Ctrl-C stops both
-```
-
-Then open **http://localhost:3000**. API docs at **http://localhost:8000/docs**.
-
-After `bootstrap.sh` the app runs fully offline — no CDN, no remote datasets, no
-LLM calls. Fonts are self-hosted.
-
-**Windows:** run through **WSL2** (`bash` scripts). The scripts also work in Git
-Bash; if `run-dev.sh` colour prefixes misbehave, run the two services in separate
-terminals (see below).
-
----
-
-## Manual setup (if bootstrap fails)
+## Manual setup (only if `bootstrap.sh` fails partway)
 
 ```bash
 # backend
@@ -121,6 +142,10 @@ cp .env.local.example .env.local
 npm install
 npm run dev
 ```
+
+> Don't run `npm run build` while `npm run dev` is running in the same folder —
+> it corrupts `.next`. If dev starts throwing 500s: `rm -rf frontend/.next` and
+> restart.
 
 ---
 
@@ -212,7 +237,7 @@ qistengine/
 | **`Model artifacts not loaded`** on `/health` | Run `cd backend && python scripts/train_model.py`. |
 | **CORS error in the browser console** | `QIST_CORS_ORIGINS` must include `http://localhost:3000` (it does by default). |
 | **Frontend build: `_mock_data.json` missing** | `cd backend && python scripts/export_demo_cache.py`. |
-| **`run-dev.sh` prints garbled colours** | Run the two services in separate terminals (see Manual setup). |
+| **`run-dev.sh` prints garbled colours** | Run the backend and frontend in two separate terminals (see Manual setup below). |
 
 ---
 

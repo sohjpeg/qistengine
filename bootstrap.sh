@@ -30,6 +30,18 @@ if [ -z "$PYBIN" ]; then
 fi
 step "Using $($PYBIN --version) at $(command -v "$PYBIN")"
 
+# --- check Node / npm up front (needed at the end) ---
+if ! command -v npm >/dev/null 2>&1 || ! command -v node >/dev/null 2>&1; then
+  printf "${RED}Node.js is not installed.${NC} Install Node 20 LTS (https://nodejs.org), reopen the terminal, and re-run.\n"
+  exit 1
+fi
+NODE_MAJOR="$(node -p 'process.versions.node.split(".")[0]' 2>/dev/null || echo 0)"
+if [ "$NODE_MAJOR" -lt 18 ]; then
+  printf "${RED}Node %s is too old.${NC} Install Node 20 LTS (https://nodejs.org) and re-run.\n" "$(node -v)"
+  exit 1
+fi
+step "Using Node $(node -v), npm $(npm -v)"
+
 VENV_PY="$ROOT/backend/.venv/bin/python"
 [ -f "$VENV_PY" ] || VENV_PY="$ROOT/backend/.venv/Scripts/python.exe"  # Windows / Git Bash
 
@@ -69,13 +81,9 @@ step "Seeding the demo database"
 ( cd "$ROOT/backend" && "$VENV_PY" -m app.seed )
 
 # --- frontend ---
-step "Frontend dependencies"
-if command -v npm >/dev/null 2>&1; then
-  ( cd "$ROOT/frontend" && npm install --silent --no-audit --no-fund )
-  ok "npm packages installed"
-else
-  printf "${YELLOW}  npm not found — install Node 20 LTS, then run: (cd frontend && npm install)${NC}\n"
-fi
+step "Frontend dependencies (npm install — first time is slow)"
+( cd "$ROOT/frontend" && npm install --silent --no-audit --no-fund )
+ok "npm packages installed"
 
 # --- done ---
 cat <<EOF
@@ -84,14 +92,12 @@ ${GREEN}============================================================${NC}
 ${GREEN} QistEngine is ready.${NC}
 ${GREEN}============================================================${NC}
 
-  Start everything (one terminal):   ${BLUE}bash run-dev.sh${NC}
+  Next step — start the app (one command, one terminal):
 
-  Or run the two services yourself:
-    backend :   cd backend && .venv/bin/activate && uvicorn app.main:app --reload --port 8000
-    frontend:   cd frontend && npm run dev
+      ${BLUE}bash run-dev.sh${NC}
 
-  API docs   :  http://localhost:8000/docs
-  App        :  http://localhost:3000
+  Then open   ${GREEN}http://localhost:3000${NC}   in your browser.
+  API docs at http://localhost:8000/docs . Ctrl-C stops everything.
 
   Demonstration model trained on synthetic data. Not a regulated credit decision.
 
