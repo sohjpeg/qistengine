@@ -1,6 +1,6 @@
 # QistEngine — Project Summary
 
-**Team:** [Sohaib Amir Bukhari](https://www.linkedin.com/in/sohaib-amir-7a89161a6/) · [Asma Imran](https://www.linkedin.com/in/asmaimran/) — BS Computer Science, NUST
+**Team:** Sohaib Amir Bukhari · Asma Imran — BS Computer Science, NUST
 **Repository:** https://github.com/sohjpeg/qistengine (public · runs fully offline · two commands)
 
 ---
