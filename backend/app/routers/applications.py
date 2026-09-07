@@ -107,6 +107,9 @@ def create_application(body: ApplicationCreate, session: Session = Depends(get_s
             archetype_hint=a.archetype,
             monthly_series=monthly,
             tenor_months=body.tenor_months,
+            # How many months the uploaded ledger actually covers, so a thin
+            # statement reports lower confidence than a full year.
+            months_observed=len(monthly) if monthly else None,
         )
     except RuntimeError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc

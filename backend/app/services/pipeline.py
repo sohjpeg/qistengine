@@ -117,6 +117,7 @@ def run_scoring(
     archetype_hint: str | None = None,
     monthly_series: list[dict[str, Any]] | None = None,
     tenor_months: int | None = None,
+    months_observed: int | None = None,
 ) -> dict[str, Any]:
     registry.ensure()
     if not registry.loaded:
@@ -153,7 +154,11 @@ def run_scoring(
     if not monthly_series:
         monthly_series = synth_monthly_series(complete_raw, archetype_hint)
 
-    confidence = confidence_from_gaps(gaps, complete_raw.get("utility_months_observed", 12.0))
+    confidence = confidence_from_gaps(
+        gaps,
+        complete_raw.get("utility_months_observed", 12.0),
+        txn_months_observed=months_observed,
+    )
 
     return {
         "application_id": applicant_id,

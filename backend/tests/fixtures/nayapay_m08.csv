@@ -1,0 +1,95 @@
+Customer Name,Test Applicant
+Customer Address,"12, Example Street, Muzaffarabad, Pakistan"
+NayaPay ID,test.applicant
+NayaPay Account Number,'03001234567
+NayaPay IBAN,PK00TEST0000000000000000
+Customer Support Number,(021) 000-000-000
+Customer Support Email,support@example.invalid
+
+
+Account Statement for:,from 01 Aug 2026 to 28 Aug 2026
+
+Opening Balance,"30,000.00",Closing Balance,"16,830.00",,Total Spent,"54,970.00",Total Income,"41,800.00"
+
+TIMESTAMP,TYPE,DESCRIPTION,AMOUNT,BALANCE
+02 Aug 2026 10:56 AM,Raast Out,"Outgoing fund transfer to Tariq Mehmood
+Askari-3898|Nickname: Tariq Mehmood
+Transaction ID 9533f2491c8fb400d98d0c6c","-1,020","30,240.00"
+02 Aug 2026 08:44 AM,Raast In,"Incoming fund transfer from Tariq Mehmood
+SadaPay-7989|Transaction ID SADAPKKA09860644167853269225","+4,830","35,740.00"
+02 Aug 2026 04:51 PM,Raast In,"Incoming fund transfer from Tariq Mehmood
+SadaPay-7989|Transaction ID SADAPKKA05803761131780905835",+780,"26,980.00"
+03 Aug 2026 04:17 AM,Peer to Peer,"Incoming fund transfer from Sana Iqbal
+HBL-2210|Transaction ID SADAPKKA16299270161146775012","+5,850","31,260.00"
+03 Aug 2026 11:45 PM,Raast Out,"Outgoing fund transfer to Concordia Traders
+HBL-2210|Nickname: Concordia Traders
+Transaction ID 80008e762fd428a304a810a6",-710,"38,560.00"
+03 Aug 2026 03:01 PM,Raast Out,"Outgoing fund transfer to Concordia Traders
+HBL-2210|Nickname: Concordia Traders
+Transaction ID 1e176a185818fe67671b836b","-1,160","31,420.00"
+05 Aug 2026 04:01 PM,Raast Out,"Outgoing fund transfer to Bilal Anwar
+SadaPay-7989|Nickname: Bilal Anwar
+Transaction ID e3b99c58cae64fa6587c2e15","-4,590","25,410.00"
+06 Aug 2026 05:36 PM,Peer to Peer,"Incoming fund transfer from Adnan Shah
+HBL-2210|Transaction ID SADAPKKA12419043818201845318","+5,940","31,910.00"
+06 Aug 2026 01:04 AM,Raast Out,"Outgoing fund transfer to Sana Iqbal
+SadaPay-7989|Nickname: Sana Iqbal
+Transaction ID ddbf0bfa7c942a454144486d","-2,830","32,580.00"
+07 Aug 2026 09:15 PM,Raast Out,"Outgoing fund transfer to Haleema Riaz
+SadaPay-7989|Nickname: Haleema Riaz
+Transaction ID 8befaee707b817802be09a13","-1,090","35,140.00"
+07 Aug 2026 08:40 PM,Raast Out,"Outgoing fund transfer to Haleema Riaz
+easypaisa Bank-3464|Nickname: Haleema Riaz
+Transaction ID 1cd066203b11b951e3a8dfe9","-1,370","25,610.00"
+09 Aug 2026 02:59 AM,Raast In,"Incoming fund transfer from Bilal Anwar
+Askari-3898|Transaction ID SADAPKKA05165396000844141429","+5,300","30,910.00"
+09 Aug 2026 11:02 AM,"Bill Payment
+(1LINK)","Paid to 1BILL Invoice/Voucher|Consumer Number: 1234567890
+Consumer Name: TEST APPLICANT","-9,400","17,580.00"
+10 Aug 2026 06:58 PM,Raast Out,"Outgoing fund transfer to Imran Baig
+HBL-2210|Nickname: Imran Baig
+Transaction ID ba19dacccafed43df1193845","-3,560","26,200.00"
+11 Aug 2026 01:07 AM,Raast Out,"Outgoing fund transfer to Concordia Traders
+SadaPay-7989|Nickname: Concordia Traders
+Transaction ID 8139597141f689852da93cac","-4,810","29,760.00"
+11 Aug 2026 05:44 PM,POS,"Card purchase at METRO CASH AND CARRY
+Karachi","-2,300","15,280.00"
+12 Aug 2026 11:04 PM,Raast Out,"Outgoing fund transfer to Concordia Traders
+Meezan-1954|Nickname: Concordia Traders
+Transaction ID 44dcf78cb32f7b9b6f34ca38","-3,150","35,410.00"
+12 Aug 2026 09:31 PM,Peer to Peer,"Incoming fund transfer from Bilal Anwar
+HBL-2210|Transaction ID SADAPKKA16149831082647994558","+4,350","35,460.00"
+12 Aug 2026 09:15 AM,Reversal,Reversal: Outgoing fund transfer to Tariq Mehmood,"+1,800","17,080.00"
+13 Aug 2026 06:11 PM,Raast Out,"Outgoing fund transfer to Sana Iqbal
+Meezan-1954|Nickname: Sana Iqbal
+Transaction ID cbc0946a2274bc0889136a4f",-420,"34,720.00"
+14 Aug 2026 03:22 PM,Raast Out,"Outgoing fund transfer to Tariq Mehmood
+SadaPay-7989|Nickname: Tariq Mehmood
+Transaction ID 2cec705f1b72624ca3e66754","-3,210","32,530.00"
+15 Aug 2026 01:54 AM,Peer to Peer,"Incoming fund transfer from Zoya Kamal
+HBL-2210|Transaction ID SADAPKKA13415468417119842065","+3,110","39,270.00"
+17 Aug 2026 12:49 AM,Raast Out,"Outgoing fund transfer to Sana Iqbal
+HBL-2210|Nickname: Sana Iqbal
+Transaction ID 4ffe307a64a75371f4eb6820","-1,040","29,200.00"
+17 Aug 2026 07:05 AM,Raast In,"Incoming fund transfer from Zoya Kamal
+Askari-3898|Transaction ID SADAPKKA15517069631523388567","+4,320","36,230.00"
+17 Aug 2026 09:54 AM,Raast Out,"Outgoing fund transfer to Rukhsana Bibi
+HBL-2210|Nickname: Rukhsana Bibi
+Transaction ID 86f6266f002861139930f2d0","-4,970","34,570.00"
+18 Aug 2026 01:26 PM,Raast Out,"Outgoing fund transfer to Imran Baig
+Askari-3898|Nickname: Imran Baig
+Transaction ID eca9c6d0a93748e465b38268","-2,190","25,970.00"
+18 Aug 2026 06:30 PM,Online,Jazz mobile load topup,-250,"16,830.00"
+24 Aug 2026 09:53 AM,Raast Out,"Outgoing fund transfer to Haleema Riaz
+Meezan-1954|Nickname: Haleema Riaz
+Transaction ID 3486fb0e0870e1179fe51164","-4,440","26,980.00"
+25 Aug 2026 11:32 AM,Raast Out,"Outgoing fund transfer to Tariq Mehmood
+Askari-3898|Nickname: Tariq Mehmood
+Transaction ID 57a8b8930c9376906e91a2a3","-1,040","28,160.00"
+25 Aug 2026 11:47 AM,Raast In,"Incoming fund transfer from Concordia Traders
+SadaPay-7989|Transaction ID SADAPKKA10829677220965360934","+1,440","36,160.00"
+25 Aug 2026 02:24 AM,Peer to Peer,"Incoming fund transfer from Bilal Anwar
+SadaPay-7989|Transaction ID SADAPKKA01002039124123120011","+4,080","39,540.00"
+28 Aug 2026 10:35 PM,Raast Out,"Outgoing fund transfer to Tariq Mehmood
+HBL-2210|Nickname: Tariq Mehmood
+Transaction ID 28bc9c3f8681cd80471bbf02","-1,420","31,110.00"

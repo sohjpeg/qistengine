@@ -6,7 +6,7 @@ from fastapi.responses import FileResponse
 from app.config import BACKEND_ROOT, settings
 from app.schemas import ParseBillResponse, ParseTransactionsResponse
 from app.services.ocr import parse_bill
-from app.services.transaction_parser import parse_transactions
+from app.services.transaction_parser import parse_transaction_files
 
 router = APIRouter(prefix="/api/v1", tags=["ingestion"])
 
@@ -33,11 +33,43 @@ async def parse_bill_route(file: UploadFile = File(...)) -> ParseBillResponse:
     return ParseBillResponse(**result)
 
 
+MAX_TRANSACTION_FILES = 12
+
+
 @router.post("/parse-transactions", response_model=ParseTransactionsResponse)
-async def parse_transactions_route(file: UploadFile = File(...)) -> ParseTransactionsResponse:
-    data = await _read_capped(file)
+async def parse_transactions_route(
+    files: list[UploadFile] = File(default=[]),
+    file: UploadFile | None = File(default=None),
+) -> ParseTransactionsResponse:
+    """Parse one or more wallet statements into a single aggregated ledger.
+
+    Several monthly exports are the normal shape of real wallet data, and
+    cashflow volatility and income trend need more than one month to mean
+    anything. `file` remains accepted so existing single-file callers keep
+    working.
+    """
+    uploads = [f for f in files if f is not None]
+    if file is not None:
+        uploads.append(file)
+    if not uploads:
+        raise HTTPException(status_code=422, detail="Upload at least one transaction file")
+    if len(uploads) > MAX_TRANSACTION_FILES:
+        raise HTTPException(
+            status_code=422,
+            detail=f"At most {MAX_TRANSACTION_FILES} statement files at a time",
+        )
+
+    items: list[tuple[str, bytes]] = []
+    total = 0
+    for upload in uploads:
+        data = await _read_capped(upload)
+        total += len(data)
+        if total > settings.max_upload_bytes * MAX_TRANSACTION_FILES:
+            raise HTTPException(status_code=413, detail="Uploads exceed the combined size limit")
+        items.append((upload.filename or "upload", data))
+
     try:
-        result = parse_transactions(file.filename or "upload", data)
+        result = parse_transaction_files(items)
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     return ParseTransactionsResponse(**result)

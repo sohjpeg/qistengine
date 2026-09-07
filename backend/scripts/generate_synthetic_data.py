@@ -33,7 +33,7 @@ BACKEND_ROOT = SCRIPT_DIR.parent
 sys.path.insert(0, str(BACKEND_ROOT))
 
 from app import reference  # noqa: E402
-from app.services.feature_engineering import FEATURE_ORDER  # noqa: E402
+from app.services.feature_engineering import FEATURE_ORDER, TRAINING_RANGES  # noqa: E402
 
 RAW_DIR = BACKEND_ROOT / "data" / "raw"
 
@@ -408,16 +408,7 @@ def build_frame(n: int, seed: int) -> tuple[pd.DataFrame, dict]:
         "utility_months_observed", "utility_disconnection_events",
         "p2p_unique_counterparties", "dependents_count",
     }
-    ranges = {
-        "utility_on_time_ratio": (0, 1), "utility_avg_days_late": (0, 60),
-        "utility_bill_volatility": (0.05, 1.3), "utility_months_observed": (0, 12),
-        "utility_disconnection_events": (0, 8), "net_cashflow_ratio": (-0.6, 0.8),
-        "cashflow_volatility": (0.05, 1.4), "income_trend_slope": (-0.4, 0.4),
-        "zero_balance_days_ratio": (0, 1), "balance_floor_ratio": (0, 0.7),
-        "counterparty_concentration_hhi": (0.03, 0.98), "merchant_inflow_share": (0, 1),
-        "mobile_topup_regularity": (0, 1), "expense_to_income_ratio": (0.2, 1.6),
-        "savings_rate": (0, 0.7),
-    }
+    ranges = TRAINING_RANGES
     for name in FEATURE_ORDER:
         col = df[name].to_numpy(dtype=float)
         if name in binary_feats:

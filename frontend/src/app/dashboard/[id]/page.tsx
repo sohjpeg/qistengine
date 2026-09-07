@@ -230,6 +230,14 @@ export default function ApplicationDetailPage() {
                 </CardHeader>
                 <CardBody>
                   <CashflowChart series={score.monthly_series} />
+                  {score.monthly_series.length > 0 && score.monthly_series.length < 6 && (
+                    <p className="mt-2 text-caption text-ink-faint">
+                      {score.monthly_series.length} month
+                      {score.monthly_series.length === 1 ? "" : "s"} of uploaded ledger
+                      data. A short history lowers confidence — volatility and income
+                      trend are imputed from the portfolio rather than measured.
+                    </p>
+                  )}
                 </CardBody>
               </Card>
             </div>
