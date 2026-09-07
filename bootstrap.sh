@@ -14,7 +14,8 @@ ok()   { printf "${GREEN}  ok${NC} %s\n" "$1"; }
 
 # --- pick a Python 3.10/3.11/3.12 interpreter (never 3.13) ---
 PYBIN=""
-for cand in python3.11 python3.12 python3.10 python3 python; do
+PY_CANDIDATES="python3.11 python3.12 python3.10 python3 python"
+for cand in $PY_CANDIDATES; do
   if command -v "$cand" >/dev/null 2>&1; then
     ver="$("$cand" -c 'import sys;print("%d.%d"%sys.version_info[:2])' 2>/dev/null || echo "0.0")"
     case "$ver" in
@@ -48,7 +49,30 @@ VENV_PY="$ROOT/backend/.venv/bin/python"
 # --- backend venv + deps ---
 step "Backend virtual environment"
 if [ ! -f "$VENV_PY" ]; then
-  "$PYBIN" -m venv "$ROOT/backend/.venv"
+  # Having the right version is not the same as being able to build a venv: a
+  # broken bundled pip (seen on some Homebrew builds) fails only at this point.
+  # Fall through to the next candidate rather than aborting the whole setup.
+  if ! "$PYBIN" -m venv "$ROOT/backend/.venv" 2>/dev/null; then
+    rm -rf "$ROOT/backend/.venv"
+    printf "${RED}%s cannot create a virtual environment.${NC} Trying another interpreter…\n" "$PYBIN"
+    for cand in $PY_CANDIDATES; do
+      [ "$cand" = "$PYBIN" ] && continue
+      command -v "$cand" >/dev/null 2>&1 || continue
+      ver="$("$cand" -c 'import sys;print("%d.%d"%sys.version_info[:2])' 2>/dev/null || echo "0.0")"
+      case "$ver" in 3.10|3.11|3.12) ;; *) continue ;; esac
+      if "$cand" -m venv "$ROOT/backend/.venv" 2>/dev/null; then
+        PYBIN="$cand"
+        step "Fell back to $($PYBIN --version) at $(command -v "$PYBIN")"
+        break
+      fi
+      rm -rf "$ROOT/backend/.venv"
+    done
+  fi
+  if [ ! -d "$ROOT/backend/.venv" ]; then
+    printf "${RED}Could not create a virtual environment with any available Python.${NC}\n"
+    printf "  macOS:  brew install python@3.11  (or: pyenv install 3.11.9)\n"
+    exit 1
+  fi
   VENV_PY="$ROOT/backend/.venv/bin/python"
   [ -f "$VENV_PY" ] || VENV_PY="$ROOT/backend/.venv/Scripts/python.exe"
 fi

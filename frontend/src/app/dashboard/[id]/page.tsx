@@ -234,8 +234,10 @@ export default function ApplicationDetailPage() {
                     <p className="mt-2 text-caption text-ink-faint">
                       {score.monthly_series.length} month
                       {score.monthly_series.length === 1 ? "" : "s"} of uploaded ledger
-                      data. A short history lowers confidence — volatility and income
-                      trend are imputed from the portfolio rather than measured.
+                      data — a short history lowers confidence.
+                      {score.monthly_series.length < 2 &&
+                        " Volatility and income trend need more than one month, so both" +
+                          " are imputed from the portfolio rather than measured."}
                     </p>
                   )}
                 </CardBody>

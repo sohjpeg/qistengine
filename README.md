@@ -131,6 +131,11 @@ bill and a transaction log.
    split debit/credit columns, `Rs`/comma/`(parentheses)` amounts and `Cr`/`Dr`
    suffixes, and classifies every row with an Urdu-and-English keyword map. It
    raises a clear error rather than guessing when a file genuinely can't be read.
+   **Several monthly exports can be uploaded at once** and are aggregated into a
+   single ledger, deduped across the overlap — cashflow volatility and income
+   trend are meaningless from one month, and a statement that cannot evidence a
+   feature now omits it (so the population median is imputed and confidence
+   drops) rather than defaulting to the most favourable value.
 2. **Feature engineering.** 26 frozen features across utility discipline,
    cashflow health, transaction behaviour and stability. Partial data is imputed
    at population medians and reported in a `data_gaps` array — scoring never
@@ -288,6 +293,9 @@ qistengine/
 | **`Model artifacts not loaded`** on `/health` | Run `cd backend && python scripts/train_model.py`. |
 | **CORS error in the browser console** | `QIST_CORS_ORIGINS` must include `http://localhost:3000` (it does by default). |
 | **Frontend build: `_mock_data.json` missing** | `cd backend && python scripts/export_demo_cache.py`. |
+| **PII shows as `[unreadable: …]`** | The database was written with a different `QIST_PII_KEY`. `rm backend/data/qistengine.db` then `cd backend && .venv/bin/python -m app.seed`. |
+| **`QIST_PII_KEY must be set`** | Only raised when `QIST_ENV=production`. Generate one: `python -c "import secrets; print(secrets.token_urlsafe(32))"`. |
+| **A wallet CSV won't parse** | Upload the CSV export rather than a PDF where possible. If several files are dropped and one fails, the others still parse and the failure is reported. |
 | **`run-dev.sh` prints garbled colours** | Run the backend and frontend in two separate terminals (see Manual setup below). |
 
 ---
@@ -308,6 +316,12 @@ Full audit with measured numbers in
   `ride_hailing_driver` are flagged for disparate impact driven by genuine
   cashflow risk, with documented mitigations (livelihood-specific thresholds,
   guarantor tiers, stepped limits, financial-literacy referrals).
+- **Encrypted at rest:** applicant names, masked CNIC/phone, extracted bill
+  fields (which carry a utility consumer number), loan purpose and officer notes
+  are AES-256-GCM encrypted before they reach SQLite. City, status and risk band
+  stay readable because the queue and analytics query them. In development a key
+  published in the source is used, with a warning, so `run-dev.sh` stays a
+  one-command run; `QIST_ENV=production` requires a real `QIST_PII_KEY`.
 - **Every decision surface** carries the demonstration disclaimer.
 
 ---
@@ -316,6 +330,11 @@ Full audit with measured numbers in
 
 - Synthetic data validates the pipeline, not real-world outcomes. No pilot book,
   no reject-inference, no back-testing against realised defaults.
+- The applicant form offers 18 cities and 6 livelihoods, but the shipped model
+  was trained on a frozen population covering 10 cities and 4 livelihoods. That
+  is sound — neither attribute is a model feature, so scoring is unaffected —
+  but the fairness audit has no row for the livelihoods outside that set until
+  the training population is regenerated.
 - The scorecard scale is anchored to prime odds (30:1 at 660); applied to a 14.5%
   synthetic portfolio, most profiles land HIGH / VERY_HIGH.
 - OCR handles common DISCO bill layouts; unusual formats fall back to simulated.
