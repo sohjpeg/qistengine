@@ -468,7 +468,7 @@ def data_dictionary() -> dict:
             "merchant_inflow_share": "Share of inflow tagged merchant / QR receipts.",
             "txn_frequency_monthly": "Total transactions per month.",
             "mobile_topup_regularity": "1 - CV of days between mobile top-ups.",
-            "expense_to_income_ratio": "Essential outflow / inflow.",
+            "expense_to_income_ratio": "Committed (non-discretionary) outflow / inflow.",
             "savings_rate": "Mean end-of-month balance / monthly inflow.",
             "committee_participation": "Binary: ROSCA / committee (BC) contributions detected.",
             "wallet_tenure_months": "Months the mobile wallet has been active.",

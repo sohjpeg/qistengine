@@ -271,7 +271,7 @@ model reading as an unexaminable black box. The panel kills that:
   (his risk is concentration + thin buffer) but sharply raises the *safe
   installment*. Score and affordability are different questions — the panel makes
   that legible.
-- `test_api.py::test_what_if_rescore_reacts_to_a_lever` covers it (32 tests total).
+- `test_api.py::test_what_if_rescore_reacts_to_a_lever` covers it.
 
 **Verified in-browser (2026-09-03):** every route renders and scrolls without
 freezing; the ledger animation is smooth and always foots to the score; all six

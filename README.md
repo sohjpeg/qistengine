@@ -214,7 +214,7 @@ All routes under `/api/v1`. Interactive docs at `/docs`.
 | GET | `/health` | Liveness + model version and load status |
 | POST | `/api/v1/score` | Score a payload of raw signals or pre-extracted features |
 | POST | `/api/v1/parse-bill` | Multipart upload → extracted bill fields |
-| POST | `/api/v1/parse-transactions` | Multipart CSV/JSON → normalised ledger + aggregates |
+| POST | `/api/v1/parse-transactions` | Multipart CSV/JSON/PDF, one or many files → one aggregated ledger + aggregates |
 | POST | `/api/v1/applications` | Create application, score, persist, return full result |
 | GET | `/api/v1/applications` | Paginated list; filter by status / risk_band / city; sort by score / date |
 | GET | `/api/v1/applications/{id}` | Full detail: documents, features, reasons, monthly series |

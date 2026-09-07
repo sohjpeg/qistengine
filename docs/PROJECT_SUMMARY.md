@@ -13,7 +13,8 @@ tailors, home-based cooks, daily-wage earners, ride-hailing drivers. A credit
 bureau has nothing on them because they were never given a first loan to build a
 history with.
 
-From **one utility bill and one mobile-wallet statement**, QistEngine produces:
+From **one utility bill and one or more monthly mobile-wallet statements**,
+QistEngine produces:
 
 - a **300–850 score** and a risk band;
 - a **calibrated probability of default** — a real frequency, not just a ranking;
@@ -79,7 +80,7 @@ git clone https://github.com/sohjpeg/qistengine.git && cd qistengine && bash run
 First run bootstraps itself (Python venv, synthetic data, model training, npm
 install, seed) in ~4 minutes, then starts both servers. App on
 `http://localhost:3000`, API docs on `http://localhost:8000/docs`. Six demo
-profiles are built in — no data to upload. **34 backend tests pass; every
+profiles are built in — no data to upload. **63 backend tests pass; every
 dependency is pinned to an exact version.**
 
 *Stack: FastAPI · SQLModel · SQLite · Next.js 14 (App Router) · LightGBM · SHAP.*
