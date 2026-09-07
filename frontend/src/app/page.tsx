@@ -75,7 +75,9 @@ export default function LandingPage() {
         <div className="border-b border-rule px-5 py-3">
           <p className="text-h2 text-ink">New here? Try it in three steps</p>
           <p className="text-caption text-ink-faint">
-            No data to upload — six demo profiles are built in. The whole thing runs offline.
+            No data to upload — six demo profiles are built in. The engine itself runs fully
+            offline; this hosted copy&rsquo;s free backend sleeps when idle, so if a page says
+            it&rsquo;s waking up, give it about 40 seconds.
           </p>
         </div>
         <ol className="divide-y divide-rule">

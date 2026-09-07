@@ -27,15 +27,18 @@ export class ApiError extends Error {
 }
 
 const OFFLINE_MESSAGE =
-  "Backend not running — start it with: uvicorn app.main:app --reload";
+  "The demo server is waking up (free instance, sleeps after 15 min idle). Give it ~40s and retry.";
 
+// The hosted backend is a free instance that cold-starts in 30–50s. Render holds
+// the request open while it boots, so a long timeout usually lets the first call
+// succeed on its own; the retry only covers a genuine transient blip.
 async function request<T>(
   path: string,
-  init?: RequestInit & { retry?: boolean },
+  init?: RequestInit & { retries?: number },
 ): Promise<T> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 30_000);
-  const retry = init?.retry ?? true;
+  const timeout = setTimeout(() => controller.abort(), 55_000);
+  const retries = init?.retries ?? 1;
   try {
     const res = await fetch(`${BASE}${path}`, {
       ...init,
@@ -58,9 +61,9 @@ async function request<T>(
     return (await res.json()) as T;
   } catch (err) {
     if (err instanceof ApiError) throw err;
-    if (retry) {
-      await new Promise((r) => setTimeout(r, 400));
-      return request<T>(path, { ...init, retry: false });
+    if (retries > 0) {
+      await new Promise((r) => setTimeout(r, 1500));
+      return request<T>(path, { ...init, retries: retries - 1 });
     }
     throw new ApiError(OFFLINE_MESSAGE, 0, OFFLINE_MESSAGE, true);
   } finally {
