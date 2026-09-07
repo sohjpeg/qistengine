@@ -19,6 +19,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 BACKEND_ROOT = SCRIPT_DIR.parent
 sys.path.insert(0, str(BACKEND_ROOT))
 
+from app.reference import ARCHETYPE_SLUG  # noqa: E402
 from app.services.mock_profiles import MOCK_PROFILES  # noqa: E402
 
 SAMPLES = BACKEND_ROOT / "data" / "samples"
@@ -37,12 +38,6 @@ LAYOUT = {
     "zubair-peshawar-autoparts": ("png", "DigitalKhata"),
 }
 
-_SLUG = {
-    "kiryana_merchant": "kiryana",
-    "daily_wage_worker": "dailywage",
-    "home_based_producer": "homebased",
-    "ride_hailing_driver": "ridehailing",
-}
 
 
 def _pdf_bytes(lines: list[str]) -> bytes:
@@ -222,7 +217,7 @@ def main() -> None:
     for p in MOCK_PROFILES:
         fmt, wallet = LAYOUT[p["id"]]
         city = p["city"].lower()
-        arch = _SLUG.get(p["archetype"], p["archetype"])
+        arch = ARCHETYPE_SLUG.get(p["archetype"], p["archetype"])
         prov = p["bill_fields"]["provider"].lower().replace("-", "")
         bill_name = f"{city}_{arch}_{prov}_bill.{ 'pdf' if fmt == 'pdf' else 'png' }"
         ledger_name = f"{city}_{arch}_{wallet.lower()}_ledger.csv"

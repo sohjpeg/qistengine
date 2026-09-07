@@ -15,6 +15,7 @@ import { ScoreLedger } from "@/components/ScoreLedger";
 import { SensitivityPanel } from "@/components/SensitivityPanel";
 import { HowToRead } from "@/components/HowToRead";
 import { BackendBanner } from "@/components/ui/BackendBanner";
+import { archetypeLabel } from "@/lib/reference";
 import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Disclaimer } from "@/components/ui/Disclaimer";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -135,7 +136,7 @@ export default function ApplicationDetailPage() {
           <h1 className="print-serif text-h1 text-ink">{detail.applicant.full_name}</h1>
           <p className="text-body text-ink-muted">
             {detail.applicant.business_type} · {detail.applicant.city} ·{" "}
-            {detail.applicant.archetype.replace(/_/g, " ")} · CNIC {detail.applicant.cnic_masked}
+            {archetypeLabel(detail.applicant.archetype)} · CNIC {detail.applicant.cnic_masked}
           </p>
         </div>
         <p className="font-mono text-mono-sm text-ink-faint">

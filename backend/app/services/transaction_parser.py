@@ -56,8 +56,11 @@ COLUMN_ALIASES: dict[str, list[str]] = {
 
 # Urdu + English keyword -> category. Order matters (first match wins).
 _KEYWORDS: list[tuple[str, str]] = [
-    (r"\b(bijli|electric|electricity|k-?electric|ke|lesco|fesco|iesco|mepco|pesco|qesco|hesco|gepco|tesco|sepco"
-     r"|wapda|disco|sui|gas|ssgc|sngpl|ptcl|water|kwsb|wasa|internet|nayatel|stormfibre|utility|util|bill)\b",
+    # "ke" (K-Electric) is deliberately spelled out rather than matched bare: it is
+    # also an extremely common Urdu particle and produced false utility matches.
+    (r"\b(bijli|electric|electricity|k-?electric|k\.e\.|lesco|fesco|iesco|mepco|pesco|qesco|hesco|gepco|tesco|sepco"
+     r"|ajkesco|ajk|gbeco|wapda|disco|sui|gas|ssgc|sngpl|ptcl|water|kwsb|wasa|internet|nayatel|stormfibre"
+     r"|utility|util|bill)\b",
      "OUTFLOW_UTILITY"),
     (r"\b(topup|top-?up|load|easyload|scratch|recharge|airtime|mobile[\s-]?balance|jazz|zong|ufone|telenor|warid|scom)\b",
      "OUTFLOW_TOPUP"),

@@ -13,15 +13,10 @@ import { cn } from "@/lib/utils";
 import { pkr } from "@/lib/format";
 import { api, ApiError } from "@/lib/api";
 import { DEMO_MODE, MOCK_PROFILES as CACHED_PROFILES } from "@/lib/mockProfiles";
+import { ARCHETYPES, CITIES, archetypeLabel } from "@/lib/reference";
 import type { ExtractedField, MockProfile } from "@/lib/types";
 
 const STEPS = ["Identity & business", "Documents", "Loan request & review"];
-const ARCHETYPES = [
-  ["kiryana_merchant", "Kiryana / grocery merchant"],
-  ["daily_wage_worker", "Daily-wage worker"],
-  ["home_based_producer", "Home-based producer"],
-  ["ride_hailing_driver", "Ride-hailing driver"],
-];
 
 function maskCnic(v: string) {
   const d = v.replace(/\D/g, "").slice(0, 13);
@@ -49,7 +44,7 @@ const EMPTY: FormState = {
   full_name: "",
   cnic: "",
   phone: "",
-  city: "Karachi",
+  city: CITIES[0] as string,
   archetype: "kiryana_merchant",
   business_type: "",
   dependents_count: 3,
@@ -207,7 +202,7 @@ export default function ApplyPage() {
               </Field>
               <Field label="City">
                 <select className="qi" value={form.city} onChange={(e) => set("city", e.target.value)}>
-                  {["Karachi", "Lahore", "Faisalabad", "Rawalpindi", "Multan", "Peshawar", "Quetta", "Hyderabad", "Sialkot", "Gujranwala"].map((c) => (
+                  {CITIES.map((c) => (
                     <option key={c}>{c}</option>
                   ))}
                 </select>
@@ -334,7 +329,7 @@ export default function ApplyPage() {
                 <dl className="mt-2 grid grid-cols-2 gap-x-6 gap-y-1 font-mono text-mono-sm">
                   <Row k="Applicant" v={form.full_name || "—"} />
                   <Row k="City" v={form.city} />
-                  <Row k="Livelihood" v={form.archetype.replace(/_/g, " ")} />
+                  <Row k="Livelihood" v={archetypeLabel(form.archetype)} />
                   <Row k="Business" v={form.business_type || "—"} />
                   <Row k="Requested" v={pkr(form.requested_amount_pkr)} />
                   <Row k="Signals captured" v={`${Object.keys(form.features).length} features`} />
