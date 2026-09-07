@@ -12,6 +12,7 @@ wrong parse would feed the model garbage.
 """
 from __future__ import annotations
 
+import csv
 import io
 import json
 import math
@@ -25,6 +26,7 @@ import pandas as pd
 from dateutil import parser as dateparser
 
 from app.config import settings
+from app.services.feature_engineering import TRAINING_RANGES
 
 COLUMN_ALIASES: dict[str, list[str]] = {
     "date": [
@@ -56,8 +58,12 @@ COLUMN_ALIASES: dict[str, list[str]] = {
 
 # Urdu + English keyword -> category. Order matters (first match wins).
 _KEYWORDS: list[tuple[str, str]] = [
-    (r"\b(bijli|electric|electricity|k-?electric|ke|lesco|fesco|iesco|mepco|pesco|qesco|hesco|gepco|tesco|sepco"
-     r"|wapda|disco|sui|gas|ssgc|sngpl|ptcl|water|kwsb|wasa|internet|nayatel|stormfibre|utility|util|bill)\b",
+    # "ke" (K-Electric) is deliberately spelled out rather than matched bare: it is
+    # also an extremely common Urdu particle and produced false utility matches.
+    (r"\b(bijli|electric|electricity|k-?electric|k\.e\.|lesco|fesco|iesco|mepco|pesco|qesco|hesco|gepco|tesco|sepco"
+     r"|ajkesco|ajk|gbeco|wapda|disco|sui|gas|ssgc|sngpl|ptcl|water|kwsb|wasa|internet|nayatel|stormfibre"
+     r"|utility|util|bill)\b"
+     r"|1bill|1link|consumer\s*(number|no)",
      "OUTFLOW_UTILITY"),
     (r"\b(topup|top-?up|load|easyload|scratch|recharge|airtime|mobile[\s-]?balance|jazz|zong|ufone|telenor|warid|scom)\b",
      "OUTFLOW_TOPUP"),
@@ -110,24 +116,39 @@ def _rows_from_dataframe(df: pd.DataFrame) -> list[dict[str, Any]]:
 
 def _load_csv_like(text: str) -> list[dict[str, Any]]:
     """Read CSV/TSV, auto-detecting the header row past any preamble rows that
-    real bank/wallet statements put on top."""
+    real bank/wallet statements put on top.
+
+    Parsed with the csv module over the whole text rather than line by line.
+    Real exports (NayaPay, for one) wrap a multi-line description in quotes, so a
+    physical line is not a record: splitting on newlines first would truncate the
+    description, drop blank lines that belong inside a quoted field, and — when
+    each line was handed to a CSV parser on its own — raise an unterminated-quote
+    error on the very first row.
+    """
     sep = "\t" if text.count("\t") > text.count(",") else ","
-    lines = [ln for ln in text.splitlines() if ln.strip()]
-    if not lines:
+    try:
+        rows = list(csv.reader(io.StringIO(text), delimiter=sep))
+    except csv.Error:
         return []
-    # find the line that best looks like a header (scan the first 25)
+    if not rows:
+        return []
+
+    # Find the record that best looks like a header (scan the first 25).
     best_idx, best_score = 0, -1
-    for i, ln in enumerate(lines[:25]):
-        cells = next(iter(pd.read_csv(io.StringIO(ln), sep=sep, header=None).values.tolist()), [])
+    for i, cells in enumerate(rows[:25]):
         sc = _score_header([str(c) for c in cells])
         if sc > best_score:
             best_idx, best_score = i, sc
     if best_score < 2:
-        best_idx = 0  # give up detecting; assume row 0 is the header
-    body = "\n".join(lines[best_idx:])
-    df = pd.read_csv(io.StringIO(body), sep=sep, dtype=str, keep_default_na=False)
-    df.columns = [str(c).strip() for c in df.columns]
-    return _rows_from_dataframe(df)
+        best_idx = 0  # give up detecting; assume the first record is the header
+
+    header = [str(c).strip() for c in rows[best_idx]]
+    out: list[dict[str, Any]] = []
+    for cells in rows[best_idx + 1:]:
+        if not any(str(c).strip() for c in cells):
+            continue  # blank *record*, not merely a blank line inside a field
+        out.append({h: (cells[i] if i < len(cells) else "") for i, h in enumerate(header) if h})
+    return out
 
 
 def _load_pdf(data: bytes) -> list[dict[str, Any]]:
@@ -216,8 +237,17 @@ def _resolve_columns(sample_keys: list[str]) -> dict[str, str | None]:
                 found = normed[_norm(alias)]
                 break
         if not found:  # loose bidirectional contains
+            # Only for aliases long enough to be distinctive. "cr" would
+            # otherwise match inside "description" and read amounts out of the
+            # narrative column; likewise "dr", "to", "ref".
+            long_aliases = [_norm(a) for a in aliases if len(_norm(a)) >= 4]
             for nk, orig in normed.items():
-                if any(_norm(a) in nk or nk in _norm(a) for a in aliases):
+                if len(nk) < 4:
+                    # A 1-2 character header is a substring of nearly every
+                    # alias, so it would match all of them and turn junk columns
+                    # into fabricated transactions.
+                    continue
+                if any(a in nk or nk in a for a in long_aliases):
                     found = orig
                     break
         resolved[canon] = found
@@ -225,6 +255,17 @@ def _resolve_columns(sample_keys: list[str]) -> dict[str, str | None]:
 
 
 _TRAIL_CRDR = re.compile(r"\b(cr|dr|db)\b", re.I)
+# A TYPE cell holding only a direction word carries no channel information.
+_PURE_DIRECTION = re.compile(r"\s*[+-]?\s*(cr|dr|db|credit|debit|in|out|inflow|outflow)\s*", re.I)
+
+
+def _squash(v: Any) -> str | None:
+    """Collapse internal whitespace. Real exports put newlines inside cells,
+    e.g. a TYPE of "Bill Payment\n(1LINK)"."""
+    if v is None:
+        return None
+    t = re.sub(r"\s+", " ", str(v)).strip()
+    return t or None
 
 
 def _to_float(v: Any) -> float | None:
@@ -265,8 +306,15 @@ def _direction(row_dir: Any, amount: float | None, raw_amount_str: str = "") -> 
     return "debit"
 
 
+_REVERSAL = re.compile(r"\breversal\b|\breversed\b|\brefund(ed)?\b", re.I)
+
+
 def _classify(counterparty: str, channel: str | None, direction: str) -> str:
     hay = f"{counterparty} {channel or ''}".lower()
+    # Checked first: a reversal is the undoing of an earlier transaction, not new
+    # money. Counting it as income overstates inflow on both sides of the ledger.
+    if _REVERSAL.search(hay):
+        return "REVERSAL"
     for pat, cat in _KEYWORDS:
         if re.search(pat, hay):
             if cat.startswith("INFLOW") and direction == "debit":
@@ -286,7 +334,8 @@ def _month_key(d: datetime) -> str:
 # --------------------------------------------------------------------------- #
 # Main
 # --------------------------------------------------------------------------- #
-def parse_transactions(filename: str, data: bytes) -> dict[str, Any]:
+def _canonicalise(filename: str, data: bytes) -> list[dict[str, Any]]:
+    """Parse one statement file into canonical transaction dicts (with `_dt`)."""
     rows = _load_rows(filename, data)
     if not rows:
         raise ValueError("No transactions found in file")
@@ -329,9 +378,8 @@ def parse_transactions(filename: str, data: bytes) -> dict[str, Any]:
         date_val = str(r.get(cols["date"], "")).strip()
         if not date_val or _FOOTER_HINT.search(date_val):
             continue
-        try:
-            d = dateparser.parse(date_val, dayfirst=True, fuzzy=True)
-        except (ValueError, OverflowError, TypeError):
+        d = _parse_date(date_val)
+        if d is None:
             continue
         if d.year < 2000 or d.year > 2100:
             continue
@@ -339,8 +387,15 @@ def parse_transactions(filename: str, data: bytes) -> dict[str, Any]:
         counterparty = str(r.get(cols["counterparty"], "") if cols["counterparty"] else "").strip() or "unknown"
         if _FOOTER_HINT.search(counterparty):
             continue
+        raw_type = _squash(r.get(cols["direction"])) if cols["direction"] else None
         direction = _direction(r.get(cols["direction"]) if cols["direction"] else None, raw_amt, raw_str)
-        channel = str(r.get(cols["channel"], "") if cols["channel"] else "").strip() or None
+        channel = _squash(r.get(cols["channel"])) if cols["channel"] else None
+        # Statements without a dedicated channel column often carry the payment
+        # rail in TYPE ("POS", "Bill Payment (1LINK)", "Raast Out"). That is real
+        # classification signal and was previously discarded. Plain direction
+        # tokens are excluded so a type=credit/debit column keeps its old meaning.
+        if not channel and raw_type and not _PURE_DIRECTION.fullmatch(raw_type):
+            channel = raw_type
         balance = _to_float(r.get(cols["balance"])) if cols["balance"] else None
 
         canonical.append(
@@ -361,19 +416,95 @@ def parse_transactions(filename: str, data: bytes) -> dict[str, Any]:
             "Found the columns but no rows parsed into valid dated transactions."
         )
 
+    return canonical
+
+
+def _dedupe(txns: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Drop rows repeated across files.
+
+    Monthly exports often overlap at the boundary, and a user may upload the same
+    file twice. Double-counting a month would distort every per-month rate.
+    """
+    seen: set[tuple[Any, ...]] = set()
+    out = []
+    for t in txns:
+        key = (t["date"], t["amount"], t["direction"], t["counterparty"][:40], t["balance"])
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(t)
+    return out
+
+
+def parse_transaction_files(items: list[tuple[str, bytes]]) -> dict[str, Any]:
+    """Parse one or more statement files and aggregate them as a single ledger.
+
+    Several monthly exports are the normal shape of real wallet data, and
+    features like cashflow volatility and income trend only mean anything across
+    more than one month.
+    """
+    if not items:
+        raise ValueError("No transaction files supplied")
+
+    canonical: list[dict[str, Any]] = []
+    errors: list[str] = []
+    parsed_names: list[str] = []
+    for name, data in items:
+        try:
+            rows = _canonicalise(name, data)
+        except ValueError as exc:
+            errors.append(f"{name}: {exc}")
+            continue
+        canonical.extend(rows)
+        parsed_names.append(name)
+
+    if not canonical:
+        # Every file failed; surface the reasons rather than a generic message.
+        raise ValueError("; ".join(errors) or "No transactions found in file")
+
+    canonical = _dedupe(canonical)
     canonical.sort(key=lambda x: x["_dt"])
     features, monthly = _derive(canonical)
     for c in canonical:
         c.pop("_dt", None)
 
     return {
-        "filename": filename,
+        "filename": ", ".join(parsed_names),
         "row_count": len(canonical),
         "months_observed": len(monthly),
         "transactions": canonical,
         "derived_features": features,
         "monthly_series": monthly,
+        "skipped_files": errors,
     }
+
+
+def parse_transactions(filename: str, data: bytes) -> dict[str, Any]:
+    """Single-file convenience wrapper, kept for the original API shape."""
+    return parse_transaction_files([(filename, data)])
+
+
+_ISO_DATE = re.compile(r"^\s*\d{4}-\d{1,2}-\d{1,2}")
+
+
+def _parse_date(value: str) -> datetime | None:
+    """Parse a statement date.
+
+    dayfirst is right for Pakistani exports (01 Jul 2026, 03-07-2026) but wrong
+    for ISO, where it turns 2026-07-01 into 7 January.
+    """
+    try:
+        return dateparser.parse(value, dayfirst=not _ISO_DATE.match(value), fuzzy=True)
+    except (ValueError, OverflowError, TypeError):
+        return None
+
+
+def _clip_to_training_range(name: str, value: float) -> float:
+    lo_hi = TRAINING_RANGES.get(name)
+    if lo_hi is None:
+        return value
+    lo, hi = lo_hi
+    return round(float(min(max(value, lo), hi)), 4)
 
 
 def _derive(txns: list[dict[str, Any]]) -> tuple[dict[str, float], list[dict[str, Any]]]:
@@ -385,6 +516,8 @@ def _derive(txns: list[dict[str, Any]]) -> tuple[dict[str, float], list[dict[str
     n_p2p = 0
     n_committee = 0
     essential_out = 0.0
+    discretionary_out = 0.0
+    n_reversals = 0
     total_out = 0.0
     total_in = 0.0
     merchant_in = 0.0
@@ -396,6 +529,15 @@ def _derive(txns: list[dict[str, Any]]) -> tuple[dict[str, float], list[dict[str
         if t["balance"] is not None:
             balances.append(t["balance"])
             m["min_balance"] = min(m.get("min_balance", t["balance"]), t["balance"])
+        if t["category"] == "REVERSAL":
+            # Money coming back from a cancelled payment. Netted against outflow
+            # rather than added to inflow, so it neither inflates income nor
+            # leaves a phantom expense behind.
+            if t["direction"] == "credit":
+                m["outflow"] -= t["amount"]
+                total_out -= t["amount"]
+                n_reversals += 1
+            continue
         if t["direction"] == "credit":
             m["inflow"] += t["amount"]
             total_in += t["amount"]
@@ -410,6 +552,8 @@ def _derive(txns: list[dict[str, Any]]) -> tuple[dict[str, float], list[dict[str
             counterparty_vol[t["counterparty"]] += t["amount"]
             if t["category"] in ("OUTFLOW_UTILITY", "OUTFLOW_ESSENTIAL"):
                 essential_out += t["amount"]
+            if t["category"] in ("OUTFLOW_DISCRETIONARY", "OUTFLOW_TOPUP"):
+                discretionary_out += t["amount"]
             if t["category"] == "OUTFLOW_P2P":
                 n_p2p += 1
                 p2p_counterparties.add(t["counterparty"])
@@ -453,24 +597,46 @@ def _derive(txns: list[dict[str, Any]]) -> tuple[dict[str, float], list[dict[str
         float(np.percentile(balances, 10) / mean_inflow) if balances and mean_inflow > 0 else 0.05
     )
 
+    # Committed (non-discretionary) outflow, not just the rows that matched a
+    # utility/essential keyword. On real wallet exports almost everything is a
+    # bare transfer, so the old essential-only basis returned 0.0 — the single
+    # best possible value — for an applicant spending most of their income.
+    committed_out = max(0.0, total_out - discretionary_out)
+
     features = {
         "monthly_inflow_pkr": round(mean_inflow, 2),
         "monthly_outflow_pkr": round(mean_outflow, 2),
         "net_cashflow_ratio": round(float(nets.mean() / mean_inflow), 4) if mean_inflow > 0 else 0.0,
-        "cashflow_volatility": round(min(cashflow_volatility, 1.4), 4),
-        "income_trend_slope": round(float(np.clip(income_trend_slope, -0.4, 0.4)), 4),
-        "zero_balance_days_ratio": round(min(zero_days_ratio, 1.0), 4),
-        "balance_floor_ratio": round(float(np.clip(balance_floor_ratio, 0.0, 0.7)), 4),
         "p2p_velocity": round(n_p2p / n_months, 3),
         "p2p_unique_counterparties": round(len(p2p_counterparties) / n_months, 3),
         "counterparty_concentration_hhi": round(min(max(hhi, 0.03), 0.98), 4),
         "merchant_inflow_share": round(merchant_in / total_in, 4) if total_in > 0 else 0.0,
         "txn_frequency_monthly": round(len(txns) / n_months, 2),
-        "mobile_topup_regularity": round(min(max(topup_reg, 0.0), 1.0), 4),
-        "expense_to_income_ratio": round(essential_out / total_in, 4) if total_in > 0 else 0.8,
-        "savings_rate": round(float(np.clip((np.mean(min_balances) / mean_inflow) if (min_balances and mean_inflow > 0) else 0.08, 0.0, 0.7)), 4),
+        "expense_to_income_ratio": round(committed_out / total_in, 4) if total_in > 0 else 0.8,
         "committee_participation": 1.0 if n_committee > 0 else 0.0,
     }
+
+    # Features below are omitted rather than defaulted when the statement cannot
+    # support them. Every default here used to be the *most favourable* value in
+    # its range, so a one-month upload scored as a perfectly stable applicant.
+    # Omitting instead lets build_feature_vector() impute the population median
+    # and detect_data_gaps() record the gap, which lowers reported confidence.
+    if len(months) >= 2:
+        features["cashflow_volatility"] = round(min(cashflow_volatility, 1.4), 4)
+        features["income_trend_slope"] = round(float(np.clip(income_trend_slope, -0.4, 0.4)), 4)
+    if balances:
+        features["zero_balance_days_ratio"] = round(min(zero_days_ratio, 1.0), 4)
+        features["balance_floor_ratio"] = round(float(np.clip(balance_floor_ratio, 0.0, 0.7)), 4)
+    if min_balances and mean_inflow > 0:
+        features["savings_rate"] = round(float(np.clip(np.mean(min_balances) / mean_inflow, 0.0, 0.7)), 4)
+    if len(topup_dates) >= 2:
+        features["mobile_topup_regularity"] = round(min(max(topup_reg, 0.0), 1.0), 4)
+
+    # Keep every value inside the range the model was trained on. A real deficit
+    # month can produce a net_cashflow_ratio of -2.9 against a training range of
+    # [-0.6, 0.8]; extrapolating LightGBM that far outside its support is not a
+    # meaningful score.
+    features = {k: _clip_to_training_range(k, v) for k, v in features.items()}
 
     monthly_series = [
         {

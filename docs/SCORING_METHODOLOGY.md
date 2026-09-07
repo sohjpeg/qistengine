@@ -33,7 +33,7 @@ that one place.
 | 16 | `merchant_inflow_share` | Share of inflow tagged merchant / QR | protective (mild) |
 | 17 | `txn_frequency_monthly` | Transactions per month | protective (mild) |
 | 18 | `mobile_topup_regularity` | 1 − CV of days between top-ups | protective (mild) |
-| 19 | `expense_to_income_ratio` | Essential outflow / inflow | risk (strong) |
+| 19 | `expense_to_income_ratio` | Committed (non-discretionary) outflow / inflow | risk (strong) |
 | 20 | `savings_rate` | Mean end-of-month balance / monthly inflow | protective |
 | 21 | `committee_participation` | ROSCA / committee (BC) contributions detected | protective |
 | 22 | `wallet_tenure_months` | Months the wallet has been active | protective (mild) |

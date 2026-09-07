@@ -265,3 +265,55 @@ def test_parse_transactions_rejects_a_file_it_cannot_read(client):
     )
     assert r.status_code == 422
     assert "column" in r.json()["detail"].lower()
+
+
+def test_parse_transactions_accepts_several_monthly_files(client):
+    """Real wallet data arrives as one export per month; they must aggregate."""
+    fixtures = Path(__file__).parent / "fixtures"
+    files = [
+        ("files", ("nayapay_m07.csv", (fixtures / "nayapay_m07.csv").read_bytes(), "text/csv")),
+        ("files", ("nayapay_m08.csv", (fixtures / "nayapay_m08.csv").read_bytes(), "text/csv")),
+    ]
+    r = client.post("/api/v1/parse-transactions", files=files)
+    assert r.status_code == 200, r.text
+    body = r.json()
+    assert body["months_observed"] == 2
+    # Only measurable across more than one month.
+    assert body["derived_features"]["cashflow_volatility"] > 0
+    assert "income_trend_slope" in body["derived_features"]
+
+
+def test_parse_transactions_still_accepts_a_single_file_field(client):
+    """The original single-file form stays supported."""
+    fixtures = Path(__file__).parent / "fixtures"
+    r = client.post(
+        "/api/v1/parse-transactions",
+        files={"file": ("nayapay_m07.csv", (fixtures / "nayapay_m07.csv").read_bytes(), "text/csv")},
+    )
+    assert r.status_code == 200, r.text
+    assert r.json()["months_observed"] == 1
+
+
+def test_thin_ledger_lowers_reported_confidence(client):
+    """A one-month statement must not score as confidently as a full history."""
+    fixtures = Path(__file__).parent / "fixtures"
+    parsed = client.post(
+        "/api/v1/parse-transactions",
+        files={"file": ("nayapay_m07.csv", (fixtures / "nayapay_m07.csv").read_bytes(), "text/csv")},
+    ).json()
+    payload = {
+        "applicant": {
+            "full_name": "Thin Ledger", "cnic": "35202-7654321-1", "phone": "03009998877",
+            "city": "Islamabad", "archetype": "street_vendor", "business_type": "Pushcart",
+            "dependents_count": 2, "has_fixed_premises": False,
+        },
+        "requested_amount_pkr": 40000, "purpose": "stock",
+        "features": parsed["derived_features"],
+        "monthly_series": parsed["monthly_series"],
+    }
+    r = client.post("/api/v1/applications", json=payload)
+    assert r.status_code == 201, r.text
+    score = r.json()["score_result"]
+    assert score["confidence"] < 0.75
+    # The real uploaded month is charted, not a synthesised 12-month series.
+    assert len(score["monthly_series"]) == 1

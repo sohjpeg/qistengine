@@ -100,9 +100,10 @@ export const api = {
     return request<ParseBillResponse>("/api/v1/parse-bill", { method: "POST", body: fd });
   },
 
-  parseTransactions: (file: File) => {
+  /** Several monthly exports aggregate into one ledger server-side. */
+  parseTransactions: (files: File[]) => {
     const fd = new FormData();
-    fd.append("file", file);
+    files.forEach((f) => fd.append("files", f));
     return request<ParseTransactionsResponse>("/api/v1/parse-transactions", {
       method: "POST",
       body: fd,

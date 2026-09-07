@@ -175,6 +175,8 @@ class ParseTransactionsResponse(BaseModel):
     transactions: list[NormalisedTxn]
     derived_features: dict[str, float]
     monthly_series: list[MonthlyPoint]
+    # Files that could not be read, when others in the same upload succeeded.
+    skipped_files: list[str] = []
     disclaimer: str = DISCLAIMER
 
 

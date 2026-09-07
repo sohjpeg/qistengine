@@ -22,6 +22,9 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./data/qistengine.db"
     model_dir: str = "./app/ml/artifacts"
     cors_origins: str = "http://localhost:3000"
+    # Key for PII encryption at rest. Blank in development falls back to a
+    # published development key (with a warning); required when env=production.
+    pii_key: str = ""
     ocr_engine: str = "auto"  # auto | tesseract | fallback
     max_upload_mb: int = 10
     seed: int = 42

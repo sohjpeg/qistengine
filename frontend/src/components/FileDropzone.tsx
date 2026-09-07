@@ -20,11 +20,14 @@ export function FileDropzone({
   sampleName,
   onFile,
   parsedSummary,
+  multiple = false,
 }: {
   label: string;
   sampleName?: string;
-  onFile: (file: File) => Promise<void> | void;
+  onFile: (files: File[]) => Promise<void> | void;
   parsedSummary?: { count: number; method: string } | null;
+  /** Allow several files at once, e.g. one wallet statement per month. */
+  multiple?: boolean;
 }) {
   const [state, setState] = useState<"idle" | "uploading" | "parsed" | "error">(
     parsedSummary ? "parsed" : "idle",
@@ -39,13 +42,14 @@ export function FileDropzone({
         setError(`File must be PDF, PNG, JPG, CSV or JSON and under ${MAX_MB} MB.`);
         return;
       }
-      const file = accepted[0];
-      if (!file) return;
-      setFileName(file.name);
+      if (!accepted.length) return;
+      setFileName(
+        accepted.length === 1 ? accepted[0].name : `${accepted.length} files`,
+      );
       setState("uploading");
       setError("");
       try {
-        await onFile(file);
+        await onFile(accepted);
         setState("parsed");
       } catch (e) {
         setState("error");
@@ -59,7 +63,7 @@ export function FileDropzone({
     onDrop,
     accept: ACCEPT,
     maxSize: MAX_MB * 1024 * 1024,
-    multiple: false,
+    multiple,
   });
 
   return (
@@ -79,7 +83,7 @@ export function FileDropzone({
         <FileText size={18} strokeWidth={1.5} className="text-ink-faint" aria-hidden />
         {state === "idle" && (
           <p className="mt-2 text-body text-ink-muted">
-            {label} — drop a file, or click to choose
+            {label} — drop {multiple ? "one or more files" : "a file"}, or click to choose
           </p>
         )}
         {state === "uploading" && (

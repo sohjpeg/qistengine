@@ -32,34 +32,53 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 BACKEND_ROOT = SCRIPT_DIR.parent
 sys.path.insert(0, str(BACKEND_ROOT))
 
-from app.services.feature_engineering import FEATURE_ORDER  # noqa: E402
+from app import reference  # noqa: E402
+from app.services.feature_engineering import FEATURE_ORDER, TRAINING_RANGES  # noqa: E402
 
 RAW_DIR = BACKEND_ROOT / "data" / "raw"
 
-ARCHETYPES = ["kiryana_merchant", "daily_wage_worker", "home_based_producer", "ride_hailing_driver"]
-ARCHETYPE_WEIGHTS = [0.32, 0.28, 0.22, 0.18]
+# --- FROZEN TRAINING VOCABULARY ------------------------------------------------
+# The shipped model (qistengine-scorecard-v1.0.0, seed 42, n=5000) was trained on
+# exactly these cities and livelihoods, so this list is pinned: re-running the
+# generator must keep reproducing the documented metrics (ROC-AUC 0.819) and the
+# six demo profile scores in the README.
+#
+# `app.reference` carries the *product* vocabulary, which is deliberately wider —
+# 18 cities and 6 livelihoods. That is safe because neither attribute is a model
+# feature: an applicant from Muzaffarabad, or a street vendor, is scored from the
+# same 26 behavioural signals as anyone else.
+#
+# To fold the wider vocabulary into a new training population, set these to
+# reference.CITIES / reference.ARCHETYPES, add the missing entries to
+# ARCHETYPE_INTERCEPT, _P_FEMALE and sample_archetype_features(), then re-run the
+# chain in bootstrap.sh and update the metrics quoted in README.md.
+TRAINING_ARCHETYPES = ["kiryana_merchant", "daily_wage_worker", "home_based_producer", "ride_hailing_driver"]
+_ARCHETYPE_W = [0.32, 0.28, 0.22, 0.18]
 
-CITIES = [
+TRAINING_CITIES = [
     "Karachi", "Lahore", "Faisalabad", "Rawalpindi", "Multan",
     "Peshawar", "Quetta", "Hyderabad", "Sialkot", "Gujranwala",
 ]
 # Approximate share of large-city population.
-CITY_WEIGHTS = [0.30, 0.22, 0.09, 0.08, 0.07, 0.07, 0.04, 0.05, 0.04, 0.04]
+_CITY_W = [0.30, 0.22, 0.09, 0.08, 0.07, 0.07, 0.04, 0.05, 0.04, 0.04]
 
-ELECTRICITY_BY_CITY = {
-    "Karachi": "K-Electric", "Lahore": "LESCO", "Faisalabad": "FESCO",
-    "Rawalpindi": "IESCO", "Multan": "MEPCO", "Peshawar": "PESCO",
-    "Quetta": "QESCO", "Hyderabad": "HESCO", "Sialkot": "GEPCO", "Gujranwala": "GEPCO",
-}
-GAS_SOUTH = {"Karachi", "Hyderabad", "Quetta"}  # SSGC; else SNGPL
+# Normalised rather than trusting a hand-summed literal: rng.choice(p=...) raises
+# if the weights miss 1.0 by more than ~1.5e-8.
+ARCHETYPE_WEIGHTS = (np.array(_ARCHETYPE_W) / np.sum(_ARCHETYPE_W)).tolist()
+CITY_WEIGHTS = (np.array(_CITY_W) / np.sum(_CITY_W)).tolist()
+
+# Domain facts (tier, DISCO, gas region) come from the product vocabulary so they
+# cannot drift from what the app displays.
+ELECTRICITY_BY_CITY = {c: reference.ELECTRICITY_BY_CITY[c] for c in TRAINING_CITIES}
+GAS_BY_CITY = {c: reference.GAS_BY_CITY[c] for c in TRAINING_CITIES}
+CITY_TIER = {c: reference.CITY_TIER[c] for c in TRAINING_CITIES}
 
 WALLETS = ["JazzCash", "EasyPaisa", "SadaPay", "NayaPay", "DigitalKhata"]
 WALLET_WEIGHTS = [0.45, 0.35, 0.08, 0.05, 0.07]
 
-CITY_TIER = {
-    "Karachi": 1, "Lahore": 1, "Faisalabad": 2, "Rawalpindi": 2, "Multan": 2,
-    "Peshawar": 2, "Quetta": 3, "Hyderabad": 2, "Sialkot": 3, "Gujranwala": 3,
-}
+# Backwards-compatible aliases (this module is imported by other scripts).
+ARCHETYPES = TRAINING_ARCHETYPES
+CITIES = TRAINING_CITIES
 
 # --- latent-risk coefficients (log-odds of default per +1 SD of the feature) ---
 # Negative => protective (raises score); positive => risk.
@@ -115,6 +134,26 @@ ARCHETYPE_INTERCEPT = {
     "home_based_producer": 0.10,
     "ride_hailing_driver": 0.06,
 }
+# Fairness-audit attribute only, never a model feature. home_based_producer
+# skews female by construction of the archetype.
+_P_FEMALE = {
+    "home_based_producer": 0.62,
+    "kiryana_merchant": 0.20,
+    "daily_wage_worker": 0.12,
+    "ride_hailing_driver": 0.04,
+}
+
+# Every archetype-keyed table must cover every training archetype. A missing key
+# makes pandas .map() yield NaN, and a NaN intercept silently drives the global
+# bisection below to its ceiling, destroying the labels for the whole portfolio
+# rather than just one slice.
+assert set(ARCHETYPE_INTERCEPT) == set(TRAINING_ARCHETYPES), "ARCHETYPE_INTERCEPT misses an archetype"
+assert set(_P_FEMALE) == set(TRAINING_ARCHETYPES), "_P_FEMALE misses an archetype"
+assert len(ARCHETYPE_WEIGHTS) == len(TRAINING_ARCHETYPES)
+assert len(CITY_WEIGHTS) == len(TRAINING_CITIES)
+assert set(TRAINING_ARCHETYPES) <= set(reference.ARCHETYPES), "unknown archetype vs app.reference"
+assert set(TRAINING_CITIES) <= set(reference.CITIES), "unknown city vs app.reference"
+
 NOISE_SIGMA = 0.55
 TARGET_DEFAULT_RATE = 0.14
 
@@ -215,7 +254,7 @@ def sample_archetype_features(rng: np.random.Generator, archetype: str, n: int) 
         f["has_fixed_premises"] = (rng.random(n) < 0.35).astype(float)
         f["sim_tenure_months"] = _clip(rng.gamma(3.2, 15.0, n), 2, 150)
 
-    else:  # ride_hailing_driver
+    elif archetype == "ride_hailing_driver":
         base_income = _lognormal(rng, 56000, 0.4, n)
         f["utility_on_time_ratio"] = _clip(rng.beta(4.5, 2.8, n), 0, 1)
         f["utility_avg_days_late"] = _clip(rng.gamma(2.4, 4.0, n), 0, 60)
@@ -242,6 +281,12 @@ def sample_archetype_features(rng: np.random.Generator, archetype: str, n: int) 
         f["dependents_count"] = _clip(rng.poisson(4.1, n), 0, 12).astype(float)
         f["has_fixed_premises"] = (rng.random(n) < 0.05).astype(float)
         f["sim_tenure_months"] = _clip(rng.gamma(3.0, 14.0, n), 2, 150)
+
+    else:
+        raise ValueError(
+            f"unknown archetype {archetype!r}; add a distribution branch here and an entry "
+            f"to ARCHETYPE_INTERCEPT and _P_FEMALE before training on it"
+        )
 
     # net_cashflow_ratio derived from inflow/outflow
     f["net_cashflow_ratio"] = _clip(
@@ -280,7 +325,7 @@ def build_frame(n: int, seed: int) -> tuple[pd.DataFrame, dict]:
     df["city"] = rng.choice(CITIES, size=len(df), p=CITY_WEIGHTS)
     df["city_tier"] = df["city"].map(CITY_TIER).astype(int)
     df["electricity_provider"] = df["city"].map(ELECTRICITY_BY_CITY)
-    df["gas_provider"] = np.where(df["city"].isin(GAS_SOUTH), "SSGC", "SNGPL")
+    df["gas_provider"] = df["city"].map(GAS_BY_CITY)
     df["wallet_provider"] = rng.choice(WALLETS, size=len(df), p=WALLET_WEIGHTS)
 
     # --- load-shedding effect: 12% have 1-2 anomalously low electricity months ---
@@ -294,10 +339,7 @@ def build_frame(n: int, seed: int) -> tuple[pd.DataFrame, dict]:
 
     # --- protected attributes (fairness audit ONLY; never model features) ---
     # home_based_producer skews female by construction of the archetype.
-    p_female = df["archetype"].map(
-        {"home_based_producer": 0.62, "kiryana_merchant": 0.20,
-         "daily_wage_worker": 0.12, "ride_hailing_driver": 0.04}
-    ).to_numpy()
+    p_female = df["archetype"].map(_P_FEMALE).to_numpy()
     df["gender"] = np.where(rng.random(len(df)) < p_female, "female", "male")
     df["religion"] = rng.choice(
         ["muslim", "christian", "hindu", "other"], size=len(df), p=[0.94, 0.03, 0.02, 0.01]
@@ -366,16 +408,7 @@ def build_frame(n: int, seed: int) -> tuple[pd.DataFrame, dict]:
         "utility_months_observed", "utility_disconnection_events",
         "p2p_unique_counterparties", "dependents_count",
     }
-    ranges = {
-        "utility_on_time_ratio": (0, 1), "utility_avg_days_late": (0, 60),
-        "utility_bill_volatility": (0.05, 1.3), "utility_months_observed": (0, 12),
-        "utility_disconnection_events": (0, 8), "net_cashflow_ratio": (-0.6, 0.8),
-        "cashflow_volatility": (0.05, 1.4), "income_trend_slope": (-0.4, 0.4),
-        "zero_balance_days_ratio": (0, 1), "balance_floor_ratio": (0, 0.7),
-        "counterparty_concentration_hhi": (0.03, 0.98), "merchant_inflow_share": (0, 1),
-        "mobile_topup_regularity": (0, 1), "expense_to_income_ratio": (0.2, 1.6),
-        "savings_rate": (0, 0.7),
-    }
+    ranges = TRAINING_RANGES
     for name in FEATURE_ORDER:
         col = df[name].to_numpy(dtype=float)
         if name in binary_feats:
@@ -435,7 +468,7 @@ def data_dictionary() -> dict:
             "merchant_inflow_share": "Share of inflow tagged merchant / QR receipts.",
             "txn_frequency_monthly": "Total transactions per month.",
             "mobile_topup_regularity": "1 - CV of days between mobile top-ups.",
-            "expense_to_income_ratio": "Essential outflow / inflow.",
+            "expense_to_income_ratio": "Committed (non-discretionary) outflow / inflow.",
             "savings_rate": "Mean end-of-month balance / monthly inflow.",
             "committee_participation": "Binary: ROSCA / committee (BC) contributions detected.",
             "wallet_tenure_months": "Months the mobile wallet has been active.",

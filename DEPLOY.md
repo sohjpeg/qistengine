@@ -44,6 +44,21 @@ The demo link you submit is the **Vercel URL**.
    | `PYTHON_VERSION` | `3.11.9` |
    | `QIST_ENV` | `production` |
    | `QIST_CORS_ORIGINS` | `http://localhost:3000` *(you'll update this in Step 3)* |
+   | `QIST_PII_KEY` | a long random string — see below |
+
+   `QIST_PII_KEY` encrypts applicant names, CNIC/phone, bill fields and officer
+   notes at rest. **It is required** because `QIST_ENV=production` is set, and
+   Render applies environment variables to the build command too — which ends in
+   `python -m app.seed`. Without the key the build fails, by design. Generate one
+   with:
+
+   ```bash
+   python -c "import secrets; print(secrets.token_urlsafe(32))"
+   ```
+
+   Keep it somewhere safe. Changing it makes an existing database unreadable —
+   harmless here, since Render rebuilds and reseeds the database on every deploy,
+   but it would matter with real data.
 
 5. **Create Web Service.** First build runs `pip install` + model training — ~6–9 min.
    Watch the log. When it says **"Your service is live"** and the status is green:
@@ -135,4 +150,21 @@ build command of just
 **"model_loaded": false at /health** — the training step didn't run or didn't write
 to `QIST_MODEL_DIR`. Check the build log for the "Training the scorecard" output.
 
+---
 
+## Deploying a branch without touching `main`
+
+The live demo builds from `main`. To put a feature branch online for review
+while leaving the current deployment exactly as it is:
+
+- **Frontend** — Vercel builds a preview URL for every branch push automatically.
+  Nothing to configure.
+- **Backend** — Render's free plan tracks one branch per service, so create a
+  *second* web service pointed at the branch. Same settings as Step 1 (root
+  directory `backend`, same build and start commands), with its own
+  `QIST_PII_KEY`. Then set the preview frontend's `NEXT_PUBLIC_API_BASE_URL` to
+  that second service's URL, and add the preview origin to its
+  `QIST_CORS_ORIGINS`.
+
+A frontend preview alone is not enough to test a backend change — encryption and
+statement parsing both live server-side.

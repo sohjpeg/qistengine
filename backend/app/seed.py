@@ -17,6 +17,7 @@ import pandas as pd
 from sqlmodel import Session, delete, select
 
 from app.database import engine, init_db
+from app.reference import ARCHETYPE_BUSINESS_TYPE
 from app.ml.registry import registry
 from app.models import Applicant, Application, Decision, Document, ScoreResult
 from app.routers.applications import mask_cnic, mask_phone
@@ -31,12 +32,6 @@ SEED = 42
 _FIRST_M = ["Ahmed", "Bilal", "Usman", "Hamza", "Faisal", "Kashif", "Naveed", "Adnan", "Rizwan", "Tariq"]
 _FIRST_F = ["Ayesha", "Fatima", "Nasreen", "Saima", "Rabia", "Kiran", "Sadia", "Nadia", "Hina", "Uzma"]
 _LAST = ["Khan", "Ahmed", "Malik", "Bhatti", "Chaudhry", "Sheikh", "Qureshi", "Butt", "Awan", "Gondal"]
-_BUSINESS = {
-    "kiryana_merchant": "Neighbourhood grocery",
-    "daily_wage_worker": "Construction & transport labour",
-    "home_based_producer": "Home-based production",
-    "ride_hailing_driver": "Ride-hailing driver",
-}
 
 
 def _wipe(session: Session) -> None:
@@ -238,7 +233,7 @@ def main() -> None:
                     phone_masked=mask_phone(f"03{rng.randint(100000000, 999999999)}"),
                     city=row["city"],
                     archetype=archetype,
-                    business_type=_BUSINESS.get(archetype, "Micro-enterprise"),
+                    business_type=ARCHETYPE_BUSINESS_TYPE.get(archetype, "Micro-enterprise"),
                     dependents_count=int(row["dependents_count"]),
                     has_fixed_premises=bool(row["has_fixed_premises"] >= 0.5),
                     created_at=submitted,

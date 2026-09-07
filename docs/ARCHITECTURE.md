@@ -46,9 +46,29 @@
    - `qist_limit.compute_qist_limit` → safe installment + haircut breakdown.
    - `feature_engineering.behavioral_metrics` → six radar axes.
    - `synth_monthly_series` reconstructs a 12-month cashflow series if no
-     transaction log was uploaded.
+     transaction log was uploaded; an uploaded ledger's real months are used
+     instead, and `months_observed` lowers reported confidence when the history
+     is thin.
 3. **Router** persists `ScoreResult`, links `Document` rows, returns the full
    `ApplicationDetail`.
+
+## Persistence and PII
+
+`SQLModel` over SQLite; the schema is created by `create_all()` (no migrations).
+Identifying columns are encrypted at rest with AES-256-GCM via two
+`TypeDecorator`s in `app/security/crypto.py`:
+
+| Encrypted | Plaintext, and why |
+|---|---|
+| `applicant.full_name`, `cnic_masked`, `phone_masked` | `applicant.city` — the queue filters on it in SQL |
+| `application.purpose` | `application.status`, `score_result.risk_band` — indexed and filtered |
+| `document.filename`, `document.extracted_json` (holds the utility consumer number) | `score_result.*_json` — numeric aggregates and SHAP, pseudonymous |
+| `decision.officer_note` | all primary/foreign keys and timestamps |
+
+The reader accepts unencrypted values, so a database written before the feature
+keeps working; writes are always encrypted. The key comes from `QIST_PII_KEY`;
+without it a development key published in the module is used and a warning
+logged, and `QIST_ENV=production` makes a real key mandatory.
 
 ## Offline guarantees
 

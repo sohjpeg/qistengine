@@ -13,15 +13,10 @@ import { cn } from "@/lib/utils";
 import { pkr } from "@/lib/format";
 import { api, ApiError } from "@/lib/api";
 import { DEMO_MODE, MOCK_PROFILES as CACHED_PROFILES } from "@/lib/mockProfiles";
-import type { ExtractedField, MockProfile } from "@/lib/types";
+import { ARCHETYPES, CITIES, archetypeLabel } from "@/lib/reference";
+import type { ExtractedField, MockProfile, MonthlyPoint } from "@/lib/types";
 
 const STEPS = ["Identity & business", "Documents", "Loan request & review"];
-const ARCHETYPES = [
-  ["kiryana_merchant", "Kiryana / grocery merchant"],
-  ["daily_wage_worker", "Daily-wage worker"],
-  ["home_based_producer", "Home-based producer"],
-  ["ride_hailing_driver", "Ride-hailing driver"],
-];
 
 function maskCnic(v: string) {
   const d = v.replace(/\D/g, "").slice(0, 13);
@@ -43,13 +38,17 @@ interface FormState {
   features: Record<string, number>;
   billFields: ExtractedField[];
   billMethod: string;
+  /** The real month-by-month series from the uploaded ledger, when there is one. */
+  monthlySeries: MonthlyPoint[] | null;
+  monthsObserved: number;
+  txnFileNames: string;
 }
 
 const EMPTY: FormState = {
   full_name: "",
   cnic: "",
   phone: "",
-  city: "Karachi",
+  city: CITIES[0] as string,
   archetype: "kiryana_merchant",
   business_type: "",
   dependents_count: 3,
@@ -59,6 +58,9 @@ const EMPTY: FormState = {
   features: {},
   billFields: [],
   billMethod: "",
+  monthlySeries: null,
+  monthsObserved: 0,
+  txnFileNames: "",
 };
 
 export default function ApplyPage() {
@@ -97,21 +99,36 @@ export default function ApplyPage() {
         confidence: 0.9,
       })),
       billMethod: "supplied",
+      monthlySeries: null,
+      monthsObserved: 0,
+      txnFileNames: "",
     });
     setStep(2);
     toast.success(`Loaded ${p.display_name}`);
   }
 
-  async function handleBill(file: File) {
-    const res = await api.parseBill(file);
+  async function handleBill(files: File[]) {
+    const res = await api.parseBill(files[0]);
     set("billFields", res.fields);
     set("billMethod", res.extraction_method);
     setForm((f) => ({ ...f, features: { ...f.features, ...res.derived_features } }));
   }
 
-  async function handleTxns(file: File) {
-    const res = await api.parseTransactions(file);
-    setForm((f) => ({ ...f, features: { ...f.features, ...res.derived_features } }));
+  async function handleTxns(files: File[]) {
+    // All months go up together: the server aggregates them into one ledger, so
+    // cashflow volatility and income trend are computed across the whole period
+    // rather than a single month overwriting the last.
+    const res = await api.parseTransactions(files);
+    setForm((f) => ({
+      ...f,
+      features: { ...f.features, ...res.derived_features },
+      monthlySeries: res.monthly_series,
+      monthsObserved: res.months_observed,
+      txnFileNames: res.filename,
+    }));
+    if (res.skipped_files?.length) {
+      toast.error(`Could not read: ${res.skipped_files.join("; ")}`);
+    }
   }
 
   async function submit() {
@@ -136,6 +153,12 @@ export default function ApplyPage() {
         purpose: form.purpose,
         features: form.features,
         bill_fields: billFieldsObj,
+        // Forward the real parsed months. Without this the backend synthesises a
+        // plausible 12-month series instead, discarding the uploaded ledger.
+        monthly_series: form.monthlySeries ?? undefined,
+        transaction_aggregates: form.monthlySeries
+          ? { ...form.features, _filename: form.txnFileNames }
+          : undefined,
       });
       toast.success("Application submitted and scored");
       router.push(`/dashboard/${detail.id}`);
@@ -207,7 +230,7 @@ export default function ApplyPage() {
               </Field>
               <Field label="City">
                 <select className="qi" value={form.city} onChange={(e) => set("city", e.target.value)}>
-                  {["Karachi", "Lahore", "Faisalabad", "Rawalpindi", "Multan", "Peshawar", "Quetta", "Hyderabad", "Sialkot", "Gujranwala"].map((c) => (
+                  {CITIES.map((c) => (
                     <option key={c}>{c}</option>
                   ))}
                 </select>
@@ -266,12 +289,20 @@ export default function ApplyPage() {
                   label="Transaction log"
                   sampleName="karachi_kiryana_easypaisa_ledger.csv"
                   onFile={handleTxns}
+                  multiple
                   parsedSummary={
-                    Object.keys(form.features).length
-                      ? { count: Object.keys(form.features).length, method: "parsed" }
+                    form.monthsObserved
+                      ? {
+                          count: Object.keys(form.features).length,
+                          method: `${form.monthsObserved} month${form.monthsObserved === 1 ? "" : "s"}`,
+                        }
                       : null
                   }
                 />
+                <p className="mt-1 text-caption text-ink-faint">
+                  Drop several monthly exports at once — they are combined into one
+                  ledger. A single month cannot show income trend or volatility.
+                </p>
               </div>
 
               {form.billFields.length > 0 && (
@@ -334,7 +365,7 @@ export default function ApplyPage() {
                 <dl className="mt-2 grid grid-cols-2 gap-x-6 gap-y-1 font-mono text-mono-sm">
                   <Row k="Applicant" v={form.full_name || "—"} />
                   <Row k="City" v={form.city} />
-                  <Row k="Livelihood" v={form.archetype.replace(/_/g, " ")} />
+                  <Row k="Livelihood" v={archetypeLabel(form.archetype)} />
                   <Row k="Business" v={form.business_type || "—"} />
                   <Row k="Requested" v={pkr(form.requested_amount_pkr)} />
                   <Row k="Signals captured" v={`${Object.keys(form.features).length} features`} />

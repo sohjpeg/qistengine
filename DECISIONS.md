@@ -271,7 +271,7 @@ model reading as an unexaminable black box. The panel kills that:
   (his risk is concentration + thin buffer) but sharply raises the *safe
   installment*. Score and affordability are different questions — the panel makes
   that legible.
-- `test_api.py::test_what_if_rescore_reacts_to_a_lever` covers it (32 tests total).
+- `test_api.py::test_what_if_rescore_reacts_to_a_lever` covers it.
 
 **Verified in-browser (2026-09-03):** every route renders and scrolls without
 freezing; the ledger animation is smooth and always foots to the score; all six
@@ -282,3 +282,103 @@ console is clean on every page.
 **Still worth a manual spot-check before the live demo:** `Ctrl-P` on
 `/dashboard/<slug>` to eyeball the printed A4 credit memo, and a quick look at
 1366×768 (the layout is built for it but was reviewed at 1568px).
+
+---
+
+## PII encrypted at rest, but not city or risk band
+
+Applicant names, masked CNIC/phone, loan purpose, document filenames, extracted
+bill fields and officer notes are AES-256-GCM encrypted before they reach
+SQLite. `city`, `status` and `risk_band` deliberately are not.
+
+That split is forced by how the app reads data: the underwriting queue filters
+`WHERE applicant.city = ?` and `risk_band` is an indexed column. Encrypting them
+would mean either decrypting every row in Python to filter (which does not
+scale and defeats the index) or storing a deterministic hash alongside, which
+leaks equality anyway for a vocabulary of eighteen known cities. The
+`ScoreResult.*_json` columns stay readable too — they hold numeric aggregates
+and SHAP explanations, which are pseudonymous, and keeping them inspectable is
+most of what makes the demo database useful.
+
+Whole-file SQLCipher was the alternative. It would have covered everything, but
+it needs a native library that is awkward on Render's free build container and
+on Windows, and the project's strongest promise is that `bash run-dev.sh` works
+anywhere. Column-level AES is pure Python and costs nothing at install time.
+
+**Key management is honest rather than impressive.** With no `QIST_PII_KEY` set,
+a key published in `app/security/crypto.py` is used and a warning is logged. A
+randomly generated per-machine key would have been worse, not better: deleting
+`backend/.env` would render the seeded demo database undecryptable mid-demo, in
+exchange for protection that is meaningless on synthetic data. `QIST_ENV=production`
+makes a real key mandatory, which is where it actually matters.
+
+The reader accepts unencrypted values so a database written before this change
+keeps working; writes are always encrypted. There is no migration system, and
+none is needed — SQLite is dynamically typed, and Render rebuilds and reseeds on
+every deploy.
+
+`test_encryption.py` opens the SQLite file and asserts the sentinel strings are
+absent from its raw bytes, with a *"Karachi is present"* negative control. The
+pre-existing test only checked the API response was masked, which proved nothing
+about what was on disk.
+
+## A wider product vocabulary than the training population
+
+The apply form offers 18 cities (Islamabad and Muzaffarabad among them) and 6
+livelihoods (adding `small_farmer` and `street_vendor`). The shipped model was
+trained on 10 cities and 4 livelihoods, and that training population is left
+frozen: `generate_synthetic_data.py` pins `TRAINING_CITIES` / `TRAINING_ARCHETYPES`
+and still reproduces `synthetic_profiles.csv` byte-for-byte, so ROC-AUC 0.819 and
+the six demo profile scores quoted in the README stay true on a fresh clone.
+
+This is sound because neither city nor livelihood is a model feature — the
+scorecard reads 26 behavioural signals and never sees either. A street vendor in
+Muzaffarabad is scored exactly like anyone else. The honest cost is that the
+fairness audit has no row for the two new livelihoods until someone regenerates;
+`app/reference.py` documents how.
+
+Regenerating was the alternative, and it was rejected on risk: it shifts every
+demo score and the model card, needs `SIGNAL_SCALE` retuning to hold the AUC
+floor, and rewrites three tracked artifacts — all for groups that score
+correctly without it.
+
+The three hand-maintained copies of these lists (generator, apply form, queue
+filter) are now one table each in `app/reference.py` and `frontend/src/lib/reference.ts`,
+with `test_reference_sync.py` failing if they drift.
+
+## Statements that cannot evidence a feature omit it
+
+Real wallet exports produced feature values that were wrong in the applicant's
+favour, which is the worst direction for a credit model to be wrong in.
+
+`expense_to_income_ratio` divided keyword-matched "essential" outflow by inflow.
+On a real NayaPay export where almost every row is a bare transfer, nothing
+matched, so it returned **0.0** — the single best value in its range — for an
+applicant spending 97% of their income. It is now committed (non-discretionary)
+outflow over inflow: 1.23 on the test statements.
+
+A one-month upload returned `cashflow_volatility = 0.0` and
+`income_trend_slope = 0.0`, again best-case on both, because the standard
+deviation of one number is zero. Rather than substitute a pessimistic default —
+which would be equally invented — features the statement cannot evidence are now
+**omitted**. The existing machinery then does the right thing: `build_feature_vector`
+imputes the population median, `detect_data_gaps` records the gap, and confidence
+falls. A single month now reports 0.49 confidence where it used to report 0.98.
+
+Derived values are also clipped to the range the model was trained on. A genuine
+deficit month yielded `net_cashflow_ratio = -2.9` against a training range of
+`[-0.6, 0.8]`; feeding LightGBM a point that far outside its support produces a
+number, not a score.
+
+## Multiple statement files in one upload
+
+Wallet apps export one file per month, and volatility and income trend are
+undefined within a single month — so the natural unit of upload is several
+files. They are aggregated server-side into one ledger and deduped on
+`(date, amount, direction, counterparty, balance)`, because monthly exports
+overlap at the boundary and users re-upload.
+
+Previously a second upload silently *overwrote* the first month's aggregates in
+form state, so uploading three months scored the same as uploading the last one.
+The single-file API shape still works, and the six synthetic sample ledgers parse
+unchanged — the synthetic demo path is untouched.

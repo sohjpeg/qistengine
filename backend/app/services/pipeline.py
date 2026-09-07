@@ -27,10 +27,21 @@ from app.services.feature_engineering import (
 from app.services.scorecard import pd_to_score, score_to_band
 
 _MONTHS = 12
-_SEASONAL_INFLOW = {  # month index 0..11 starting 11 months ago; Ramzan/Eid bumps
-    "ramzan_eid": 1.35,
-    "monsoon": 0.8,
+# Inflow multipliers by calendar month number, per livelihood. Only shapes the
+# displayed 12-month chart for applicants who uploaded no ledger — never a model
+# input. Archetypes absent from the table use _DEFAULT_SEASONALITY.
+_SEASONALITY: dict[str, dict[int, float]] = {
+    # Ramzan / Eid trading peak.
+    "kiryana_merchant": {3: 1.18, 4: 1.18, 5: 1.18, 7: 0.95, 8: 0.95},
+    # Monsoon stops outdoor site work.
+    "daily_wage_worker": {3: 1.06, 4: 1.06, 5: 1.06, 7: 0.82, 8: 0.82},
+    # Rabi (wheat, Apr-May) and kharif (rice/cotton, Oct-Nov) harvests, with the
+    # lean pre-harvest months in between.
+    "small_farmer": {1: 0.62, 2: 0.65, 4: 1.55, 5: 1.60, 7: 0.70, 8: 0.70, 10: 1.45, 11: 1.50},
+    # Festival footfall, washed out by monsoon.
+    "street_vendor": {3: 1.22, 4: 1.25, 5: 1.20, 7: 0.85, 8: 0.85},
 }
+_DEFAULT_SEASONALITY: dict[int, float] = {3: 1.06, 4: 1.06, 5: 1.06, 7: 0.95, 8: 0.95}
 
 
 def _iso_now() -> str:
@@ -64,11 +75,8 @@ def synth_monthly_series(raw: dict[str, Any], archetype: str | None) -> list[dic
     series = []
     for i, ym in enumerate(months):
         month_num = int(ym.split("-")[1])
-        seasonal = 1.0
-        if month_num in (3, 4, 5):  # rough Ramzan / Eid window
-            seasonal *= 1.18 if archetype == "kiryana_merchant" else 1.06
-        if month_num in (7, 8):  # monsoon
-            seasonal *= 0.82 if archetype == "daily_wage_worker" else 0.95
+        table = _SEASONALITY.get(archetype or "", _DEFAULT_SEASONALITY)
+        seasonal = table.get(month_num, 1.0)
         drift = 1.0 + trend * (i - _MONTHS / 2) / _MONTHS
         shock = float(rng.normal(1.0, min(0.35, max(0.03, vol * 0.6))))
         m_inflow = max(0.0, inflow * seasonal * drift * shock)
@@ -109,6 +117,7 @@ def run_scoring(
     archetype_hint: str | None = None,
     monthly_series: list[dict[str, Any]] | None = None,
     tenor_months: int | None = None,
+    months_observed: int | None = None,
 ) -> dict[str, Any]:
     registry.ensure()
     if not registry.loaded:
@@ -145,7 +154,11 @@ def run_scoring(
     if not monthly_series:
         monthly_series = synth_monthly_series(complete_raw, archetype_hint)
 
-    confidence = confidence_from_gaps(gaps, complete_raw.get("utility_months_observed", 12.0))
+    confidence = confidence_from_gaps(
+        gaps,
+        complete_raw.get("utility_months_observed", 12.0),
+        txn_months_observed=months_observed,
+    )
 
     return {
         "application_id": applicant_id,

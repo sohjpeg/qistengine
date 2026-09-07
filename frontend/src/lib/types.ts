@@ -120,6 +120,8 @@ export interface ParseTransactionsResponse {
   transactions: NormalisedTxn[];
   derived_features: Record<string, number>;
   monthly_series: MonthlyPoint[];
+  /** Files that could not be read, when others in the same upload succeeded. */
+  skipped_files: string[];
   disclaimer: string;
 }
 

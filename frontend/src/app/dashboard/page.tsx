@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { pkr } from "@/lib/format";
 import { api, ApiError } from "@/lib/api";
 import { DEMO_MODE, MOCK_BUNDLES } from "@/lib/mockProfiles";
+import { CITIES } from "@/lib/reference";
 import type {
   ApplicationSummary,
   MetricsResponse,
@@ -18,10 +19,6 @@ import type {
 } from "@/lib/types";
 
 const BANDS: RiskBand[] = ["LOW", "MEDIUM", "HIGH", "VERY_HIGH"];
-const CITIES = [
-  "Karachi", "Lahore", "Faisalabad", "Rawalpindi", "Multan",
-  "Peshawar", "Quetta", "Hyderabad", "Sialkot", "Gujranwala",
-];
 
 function demoRows(): ApplicationSummary[] {
   return MOCK_BUNDLES.map((b, i) => ({

@@ -16,3 +16,4 @@ pytesseract==0.3.10
 python-dateutil==2.9.0.post0
 httpx==0.27.0
 pytest==8.2.2
+cryptography==43.0.3

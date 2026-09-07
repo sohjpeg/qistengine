@@ -111,6 +111,23 @@ POPULATION_MEDIANS: dict[str, float] = {
     "sim_tenure_months": 40.0,
 }
 
+# Valid range of each continuous feature in the training population. Used to clip
+# values derived from real uploaded statements: a genuine deficit month can yield
+# a net_cashflow_ratio of -2.9, and scoring that means extrapolating the model far
+# outside the support it was fitted on. Mirrored by the generator, which clips the
+# synthetic columns to the same bounds.
+TRAINING_RANGES: dict[str, tuple[float, float]] = {
+    "utility_on_time_ratio": (0, 1), "utility_avg_days_late": (0, 60),
+    "utility_bill_volatility": (0.05, 1.3), "utility_months_observed": (0, 12),
+    "utility_disconnection_events": (0, 8), "net_cashflow_ratio": (-0.6, 0.8),
+    "cashflow_volatility": (0.05, 1.4), "income_trend_slope": (-0.4, 0.4),
+    "zero_balance_days_ratio": (0, 1), "balance_floor_ratio": (0, 0.7),
+    "counterparty_concentration_hhi": (0.03, 0.98), "merchant_inflow_share": (0, 1),
+    "mobile_topup_regularity": (0, 1), "expense_to_income_ratio": (0.2, 1.6),
+    "savings_rate": (0, 0.7),
+}
+
+
 # Which features come from the utility bill vs. the transaction log. Used to decide
 # which block to impute when a caller submits partial data.
 UTILITY_BLOCK: list[str] = FEATURE_ORDER[0:5]
@@ -191,9 +208,21 @@ def detect_data_gaps(raw: dict[str, Any]) -> list[dict[str, str]]:
     return gaps
 
 
-def confidence_from_gaps(gaps: list[dict[str, str]], utility_months_observed: float) -> float:
-    """Blend data-depth and completeness into a 0-1 confidence figure."""
-    depth = _scale(utility_months_observed, 3.0, 12.0)
+def confidence_from_gaps(
+    gaps: list[dict[str, str]],
+    utility_months_observed: float,
+    txn_months_observed: float | None = None,
+) -> float:
+    """Blend data-depth and completeness into a 0-1 confidence figure.
+
+    Depth is the *thinnest* evidence available. A twelve-month bill history says
+    little about someone whose wallet statement covers a single month, and that
+    case should not report the same confidence as a full year of both.
+    """
+    months = utility_months_observed
+    if txn_months_observed is not None:
+        months = min(months, txn_months_observed)
+    depth = _scale(months, 3.0, 12.0)
     completeness = 1.0 - 0.22 * len([g for g in gaps if g["detail"].startswith("No")])
     completeness -= 0.06 * len([g for g in gaps if g["detail"].startswith("Partial")])
     return round(_clip01(0.35 + 0.4 * depth + 0.4 * _clip01(completeness) - 0.15), 2)
